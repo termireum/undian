@@ -6,94 +6,314 @@
     <title>Arisan Digital Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        @keyframes bounce-slow { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-        .animate-bounce-slow { animation: bounce-slow 2s infinite; }
-        .shuffling { color: #4f46e5; transition: all 0.1s ease-in-out; }
+        * { font-family: 'Inter', sans-serif; }
+
+        body {
+            background: #0a0a0f;
+            background-image:
+                radial-gradient(ellipse at 20% 50%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(168, 85, 247, 0.12) 0%, transparent 50%),
+                radial-gradient(ellipse at 60% 80%, rgba(59, 130, 246, 0.08) 0%, transparent 50%);
+            min-height: 100vh;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+        }
+
+        .glass-input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #e2e8f0;
+            transition: all 0.2s;
+        }
+        .glass-input:focus {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(99, 102, 241, 0.6);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+        }
+        .glass-input::placeholder { color: rgba(148, 163, 184, 0.4); }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border: 1px solid rgba(139, 92, 246, 0.5);
+            box-shadow: 0 4px 24px rgba(99, 102, 241, 0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+            transition: all 0.2s;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            box-shadow: 0 8px 32px rgba(99, 102, 241, 0.45), inset 0 1px 0 rgba(255,255,255,0.1);
+            transform: translateY(-1px);
+        }
+        .btn-primary:active { transform: translateY(1px); }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: rgba(148, 163, 184, 0.9);
+            transition: all 0.2s;
+        }
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.09);
+            color: #e2e8f0;
+        }
+
+        .badge {
+            background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(139,92,246,0.2));
+            border: 1px solid rgba(99,102,241,0.3);
+            color: #a5b4fc;
+        }
+
+        .winner-glow {
+            text-shadow: 0 0 40px rgba(99, 102, 241, 0.5);
+        }
+
+        .name-display {
+            background: linear-gradient(135deg, #818cf8, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        @keyframes pulse-ring {
+            0% { transform: scale(0.8); opacity: 1; }
+            100% { transform: scale(1.6); opacity: 0; }
+        }
+        .pulse-ring {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            border: 2px solid rgba(99, 102, 241, 0.5);
+            animation: pulse-ring 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+        }
+        .pulse-ring-2 {
+            animation-delay: 0.5s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-12px) rotate(5deg); }
+        }
+        .float-icon { animation: float 3s ease-in-out infinite; }
+
+        @keyframes shimmer {
+            0% { background-position: -200% center; }
+            100% { background-position: 200% center; }
+        }
+        .shimmer-text {
+            background: linear-gradient(90deg, #818cf8, #e879f9, #818cf8);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shimmer 3s linear infinite;
+        }
+
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+        }
+
+        .timer-ring {
+            stroke-dasharray: 251;
+            stroke-dashoffset: 0;
+            transition: stroke-dashoffset 1s linear;
+            transform: rotate(-90deg);
+            transform-origin: center;
+        }
+
+        scrollbar-width: thin;
+        textarea::-webkit-scrollbar { width: 4px; }
+        textarea::-webkit-scrollbar-track { background: transparent; }
+        textarea::-webkit-scrollbar-thumb { background: rgba(99,102,241,0.3); border-radius: 2px; }
     </style>
 </head>
-<body class="bg-gradient-to-br from-indigo-500 to-purple-600 min-h-screen flex items-center justify-center p-4 font-sans text-slate-800">
+<body class="flex items-center justify-center p-4 min-h-screen">
 
-    <div class="bg-white p-8 rounded-[2rem] shadow-2xl w-full max-w-lg border-4 border-white/20 backdrop-blur-sm">
-        
+    <div class="w-full max-w-md">
+
+        <!-- Header -->
         <div class="text-center mb-6">
-            <div class="inline-block bg-yellow-400 text-yellow-900 px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest mb-2 shadow-sm">
-                Arisan Digital
-            </div>
-            <h1 class="text-4xl font-black text-slate-800 tracking-tight leading-none">SIAPA MENANG?</h1>
-        </div>
-        
-        <div id="ui-input" class="space-y-4">
-            <div class="bg-slate-50 p-4 rounded-2xl border-2 border-slate-100">
-                <label class="block text-sm font-bold text-slate-500 mb-2 uppercase tracking-wide">Daftar Anggota Arisan</label>
-                <textarea id="namesInput" rows="8" 
-                    class="w-full bg-transparent border-none focus:ring-0 outline-none text-lg font-medium text-slate-700 placeholder:text-slate-300 resize-none"
-                    placeholder="Tulis nama peserta...&#10;Contoh:&#10;Ibu Siska&#10;Pak RT&#10;Mbak Dini"></textarea>
-            </div>
-            
-            <button onclick="startArisan()" 
-                class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-black py-5 rounded-2xl transition-all shadow-[0_8px_0_rgb(49,46,129)] active:shadow-none active:translate-y-2 text-xl italic tracking-wider">
-                KOCOK SEKARANG! 🎲
-            </button>
+            <span class="badge inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-widest mb-3">
+                <span class="w-1.5 h-1.5 rounded-full bg-indigo-400 inline-block"></span>
+                Arisan Digital Pro
+            </span>
+            <h1 class="text-4xl font-black text-white tracking-tight">SIAPA MENANG?</h1>
+            <p class="text-slate-500 text-sm mt-1.5">Kocok nama secara adil & transparan</p>
         </div>
 
-        <div id="ui-shuffling" class="hidden py-10 text-center">
-            <div id="timer" class="text-2xl font-black text-red-500 mb-2 bg-red-50 inline-block px-4 py-1 rounded-full">30</div>
-            <p class="text-slate-400 font-bold uppercase text-xs tracking-tighter mb-8 italic">Sedang mengocok nama...</p>
-            
-            <div class="h-24 flex items-center justify-center">
-                <div id="nameDisplay" class="text-4xl font-black text-slate-800 uppercase tracking-tighter transition-all italic">---</div>
+        <!-- Main Card -->
+        <div class="glass-card rounded-3xl overflow-hidden shadow-2xl">
+
+            <!-- Input UI -->
+            <div id="ui-input" class="p-6 space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 uppercase tracking-widest mb-2.5">
+                        Daftar Peserta Arisan
+                    </label>
+                    <textarea id="namesInput" rows="9"
+                        class="glass-input w-full rounded-2xl px-4 py-3 text-sm font-medium resize-none leading-relaxed"
+                        placeholder="Tulis nama peserta (satu per baris)&#10;&#10;Contoh:&#10;Ibu Siska&#10;Pak RT&#10;Mbak Dini&#10;Bu Yanti&#10;Pak Hendra"></textarea>
+                </div>
+
+                <div class="divider"></div>
+
+                <div id="participant-count" class="flex items-center justify-between text-xs text-slate-500 px-0.5">
+                    <span>Peserta terdaftar</span>
+                    <span id="count-display" class="font-semibold text-slate-400">0 orang</span>
+                </div>
+
+                <button onclick="startArisan()"
+                    class="btn-primary w-full text-white font-bold py-4 rounded-2xl text-base flex items-center justify-center gap-2.5">
+                    <span>Mulai Pengundian</span>
+                    <span class="text-lg">🎲</span>
+                </button>
             </div>
-            
-            <div class="mt-8 animate-bounce-slow text-4xl">🎰</div>
+
+            <!-- Shuffling UI -->
+            <div id="ui-shuffling" class="hidden p-6">
+                <div class="text-center mb-6">
+                    <!-- Timer Circle -->
+                    <div class="relative inline-flex items-center justify-center w-20 h-20 mb-4">
+                        <svg class="w-20 h-20 absolute" viewBox="0 0 90 90">
+                            <circle cx="45" cy="45" r="40" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="5"/>
+                            <circle id="timerCircle" cx="45" cy="45" r="40" fill="none" stroke="url(#timerGrad)" stroke-width="5" stroke-linecap="round" class="timer-ring"/>
+                            <defs>
+                                <linearGradient id="timerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" stop-color="#6366f1"/>
+                                    <stop offset="100%" stop-color="#a855f7"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                        <span id="timer" class="text-2xl font-black text-white relative z-10">30</span>
+                    </div>
+                    <p class="text-slate-500 text-xs font-semibold uppercase tracking-widest">Sedang mengocok nama...</p>
+                </div>
+
+                <div class="divider mb-6"></div>
+
+                <!-- Name Display -->
+                <div class="text-center py-6">
+                    <div class="mb-2 text-xs text-slate-500 uppercase tracking-widest font-semibold">Nama Berputar</div>
+                    <div id="nameDisplay" class="name-display text-5xl font-black uppercase tracking-tight min-h-[64px] flex items-center justify-center transition-all duration-75">
+                        ---
+                    </div>
+                </div>
+
+                <div class="divider my-4"></div>
+
+                <div class="text-center mt-4">
+                    <div class="float-icon text-4xl inline-block">🎰</div>
+                </div>
+            </div>
+
+            <!-- Winner UI -->
+            <div id="ui-winner" class="hidden p-6 text-center">
+                <div class="relative inline-flex items-center justify-center w-20 h-20 mb-5">
+                    <div class="pulse-ring"></div>
+                    <div class="pulse-ring pulse-ring-2"></div>
+                    <div class="relative z-10 text-5xl">👑</div>
+                </div>
+
+                <p class="text-xs font-semibold text-slate-500 uppercase tracking-[0.2em] mb-3">Pemenang Arisan</p>
+
+                <h2 id="finalWinner" class="shimmer-text text-4xl font-black break-words mb-2 min-h-[52px] px-2 leading-tight"></h2>
+
+                <p class="text-slate-600 text-sm mb-8">Selamat! Semoga rejeki selalu lancar 🎉</p>
+
+                <div class="divider mb-6"></div>
+
+                <div class="flex gap-3">
+                    <button onclick="resetGame()"
+                        class="btn-secondary flex-1 font-semibold py-3 px-6 rounded-xl text-sm">
+                        Kocok Lagi
+                    </button>
+                    <button onclick="resetAll()"
+                        class="btn-secondary flex-1 font-semibold py-3 px-6 rounded-xl text-sm">
+                        Reset Daftar
+                    </button>
+                </div>
+            </div>
+
         </div>
 
-        <div id="ui-winner" class="hidden py-6 text-center">
-            <div class="text-6xl mb-4">👑</div>
-            <p class="text-indigo-500 font-black uppercase tracking-[0.2em] mb-2 text-sm">Pemenang Arisan:</p>
-            <h2 id="finalWinner" class="text-5xl font-black text-slate-900 break-words mb-10 px-2 drop-shadow-sm"></h2>
-            
-            <button onclick="resetGame()" 
-                class="bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-3 px-8 rounded-xl transition-all text-sm uppercase">
-                Kocok Lagi
-            </button>
-        </div>
+        <!-- Footer -->
+        <p class="text-center text-slate-600 text-xs mt-5">Pengundian acak yang adil & transparan ✨</p>
+
     </div>
 
     <script>
         let intervalShuffle;
         let intervalTimer;
+        let savedNames = [];
+
+        // Live participant count
+        document.getElementById('namesInput').addEventListener('input', updateCount);
+
+        function updateCount() {
+            const input = document.getElementById('namesInput').value;
+            const names = input.split('\n').map(n => n.trim()).filter(n => n !== "");
+            const countEl = document.getElementById('count-display');
+            countEl.textContent = names.length + ' orang';
+            countEl.className = names.length >= 2
+                ? 'font-semibold text-indigo-400'
+                : 'font-semibold text-slate-400';
+        }
 
         function startArisan() {
             const input = document.getElementById('namesInput').value;
             const names = input.split('\n').map(n => n.trim()).filter(n => n !== "");
 
             if (names.length < 2) {
-                alert("Masukkan minimal 2 orang peserta arisan!");
+                // Shake effect on textarea
+                const ta = document.getElementById('namesInput');
+                ta.style.borderColor = 'rgba(239, 68, 68, 0.6)';
+                ta.style.boxShadow = '0 0 0 3px rgba(239, 68, 68, 0.15)';
+                setTimeout(() => {
+                    ta.style.borderColor = '';
+                    ta.style.boxShadow = '';
+                }, 1500);
                 return;
             }
 
-            // Ganti UI ke mode kocok
+            savedNames = names;
+
             document.getElementById('ui-input').classList.add('hidden');
             document.getElementById('ui-shuffling').classList.remove('hidden');
 
             let timeLeft = 30;
             const timerEl = document.getElementById('timer');
             const nameEl = document.getElementById('nameDisplay');
+            const circle = document.getElementById('timerCircle');
+            const circumference = 251;
 
-            // 1. Logika Pengurangan Waktu
+            circle.style.strokeDashoffset = 0;
+
             intervalTimer = setInterval(() => {
                 timeLeft--;
                 timerEl.innerText = timeLeft;
+                // Update circle
+                const offset = circumference * (1 - timeLeft / 30);
+                circle.style.strokeDashoffset = offset;
+
+                if (timeLeft <= 5) {
+                    timerEl.style.color = '#f87171';
+                    circle.style.stroke = '#f87171';
+                }
+
                 if (timeLeft <= 0) stopArisan(names);
             }, 1000);
 
-            // 2. Logika Nama Berputar Cepat (Visual Game)
             intervalShuffle = setInterval(() => {
                 const randomName = names[Math.floor(Math.random() * names.length)];
                 nameEl.innerText = randomName;
-                nameEl.classList.toggle('scale-110'); // Efek getar
-            }, 80); // Berubah setiap 0.08 detik
+            }, 80);
         }
 
         function stopArisan(names) {
@@ -102,44 +322,77 @@
 
             const winner = names[Math.floor(Math.random() * names.length)];
 
-            // Pindah ke UI Pemenang
             document.getElementById('ui-shuffling').classList.add('hidden');
             document.getElementById('ui-winner').classList.remove('hidden');
             document.getElementById('finalWinner').innerText = winner;
 
-            // Efek Kembang Api
             fireConfetti();
         }
 
         function resetGame() {
+            // Keep same name list, reshuffle
             document.getElementById('ui-winner').classList.add('hidden');
+            document.getElementById('ui-input').classList.add('hidden');
+
+            // Re-trigger with saved names
+            document.getElementById('ui-shuffling').classList.remove('hidden');
+
+            const names = savedNames;
+            let timeLeft = 30;
+            const timerEl = document.getElementById('timer');
+            const nameEl = document.getElementById('nameDisplay');
+            const circle = document.getElementById('timerCircle');
+            const circumference = 251;
+
+            timerEl.style.color = 'white';
+            circle.style.stroke = 'url(#timerGrad)';
+            circle.style.strokeDashoffset = 0;
+            timerEl.innerText = '30';
+
+            intervalTimer = setInterval(() => {
+                timeLeft--;
+                timerEl.innerText = timeLeft;
+                const offset = circumference * (1 - timeLeft / 30);
+                circle.style.strokeDashoffset = offset;
+
+                if (timeLeft <= 5) {
+                    timerEl.style.color = '#f87171';
+                }
+
+                if (timeLeft <= 0) stopArisan(names);
+            }, 1000);
+
+            intervalShuffle = setInterval(() => {
+                const randomName = names[Math.floor(Math.random() * names.length)];
+                nameEl.innerText = randomName;
+            }, 80);
+        }
+
+        function resetAll() {
+            clearInterval(intervalTimer);
+            clearInterval(intervalShuffle);
+            document.getElementById('ui-winner').classList.add('hidden');
+            document.getElementById('ui-shuffling').classList.add('hidden');
             document.getElementById('ui-input').classList.remove('hidden');
-            document.getElementById('timer').innerText = "30";
+            document.getElementById('namesInput').value = '';
+            document.getElementById('count-display').textContent = '0 orang';
+            document.getElementById('count-display').className = 'font-semibold text-slate-400';
+            document.getElementById('timer').innerText = '30';
+            document.getElementById('timer').style.color = 'white';
+            const circle = document.getElementById('timerCircle');
+            circle.style.strokeDashoffset = 0;
+            circle.style.stroke = 'url(#timerGrad)';
+            savedNames = [];
         }
 
         function fireConfetti() {
-            var duration = 3 * 1000;
-            var end = Date.now() + duration;
+            const duration = 3.5 * 1000;
+            const end = Date.now() + duration;
 
             (function frame() {
-              confetti({
-                particleCount: 3,
-                angle: 60,
-                spread: 55,
-                origin: { x: 0 },
-                colors: ['#6366f1', '#a855f7']
-              });
-              confetti({
-                particleCount: 3,
-                angle: 120,
-                spread: 55,
-                origin: { x: 1 },
-                colors: ['#6366f1', '#a855f7']
-              });
-
-              if (Date.now() < end) {
-                requestAnimationFrame(frame);
-              }
+                confetti({ particleCount: 4, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#6366f1', '#a855f7', '#e879f9', '#818cf8'] });
+                confetti({ particleCount: 4, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#6366f1', '#a855f7', '#e879f9', '#818cf8'] });
+                if (Date.now() < end) requestAnimationFrame(frame);
             }());
         }
     </script>
