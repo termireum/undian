@@ -1,400 +1,1164 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arisan Digital Pro</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <style>
-        * { font-family: 'Inter', sans-serif; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arisan Digital Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<style>
+  :root {
+    --bg: #0c0c10;
+    --surface: #131318;
+    --surface2: #1a1a22;
+    --border: rgba(255,255,255,0.07);
+    --border-hover: rgba(255,255,255,0.14);
+    --accent: #7c6af7;
+    --accent2: #b06ef3;
+    --accent-glow: rgba(124,106,247,0.25);
+    --text: #f0eff8;
+    --text-2: #8b8a9e;
+    --text-3: #4e4d60;
+    --danger: #f87171;
+    --success: #4ade80;
+    --gold: #fbbf24;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        body {
-            background: #0a0a0f;
-            background-image:
-                radial-gradient(ellipse at 20% 50%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
-                radial-gradient(ellipse at 80% 20%, rgba(168, 85, 247, 0.12) 0%, transparent 50%),
-                radial-gradient(ellipse at 60% 80%, rgba(59, 130, 246, 0.08) 0%, transparent 50%);
-            min-height: 100vh;
-        }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 16px 48px;
+    position: relative;
+    overflow-x: hidden;
+  }
 
-        .glass-card {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-        }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 15% 20%, rgba(124,106,247,0.1) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 60% at 85% 70%, rgba(176,110,243,0.07) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 28px 28px;
+    pointer-events: none;
+    z-index: 0;
+  }
 
-        .glass-input {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: #e2e8f0;
-            transition: all 0.2s;
-        }
-        .glass-input:focus {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(99, 102, 241, 0.6);
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
-        }
-        .glass-input::placeholder { color: rgba(148, 163, 184, 0.4); }
+  .app-wrapper {
+    width: 100%;
+    max-width: 480px;
+    position: relative;
+    z-index: 1;
+  }
 
-        .btn-primary {
-            background: linear-gradient(135deg, #6366f1, #8b5cf6);
-            border: 1px solid rgba(139, 92, 246, 0.5);
-            box-shadow: 0 4px 24px rgba(99, 102, 241, 0.3), inset 0 1px 0 rgba(255,255,255,0.1);
-            transition: all 0.2s;
-        }
-        .btn-primary:hover {
-            background: linear-gradient(135deg, #4f46e5, #7c3aed);
-            box-shadow: 0 8px 32px rgba(99, 102, 241, 0.45), inset 0 1px 0 rgba(255,255,255,0.1);
-            transform: translateY(-1px);
-        }
-        .btn-primary:active { transform: translateY(1px); }
+  /* NAV */
+  .top-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 18px;
+    letter-spacing: -0.5px;
+    color: var(--text);
+  }
+  .logo span {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .nav-tabs {
+    display: flex;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 3px;
+    gap: 2px;
+  }
+  .nav-tab {
+    background: none;
+    border: none;
+    color: var(--text-2);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 7px;
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+  .nav-tab.active {
+    background: var(--surface2);
+    color: var(--text);
+    border: 1px solid var(--border-hover);
+  }
+  .nav-tab:hover:not(.active) { color: var(--text); }
 
-        .btn-secondary {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            color: rgba(148, 163, 184, 0.9);
-            transition: all 0.2s;
-        }
-        .btn-secondary:hover {
-            background: rgba(255,255,255,0.09);
-            color: #e2e8f0;
-        }
+  /* CARD */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    overflow: hidden;
+  }
+  .card-header {
+    padding: 18px 22px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .card-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--text-2);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .badge-pill {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+    background: rgba(124,106,247,0.12);
+    border: 1px solid rgba(124,106,247,0.25);
+    color: #a89ef9;
+  }
+  .card-body { padding: 18px 22px; }
 
-        .badge {
-            background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(139,92,246,0.2));
-            border: 1px solid rgba(99,102,241,0.3);
-            color: #a5b4fc;
-        }
+  /* BUTTONS */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.18s;
+    padding: 0 18px;
+    height: 42px;
+    white-space: nowrap;
+  }
+  .btn-full { width: 100%; }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+    color: #fff;
+    box-shadow: 0 4px 20px var(--accent-glow);
+  }
+  .btn-primary:hover { filter: brightness(1.08); transform: translateY(-1px); box-shadow: 0 8px 28px var(--accent-glow); }
+  .btn-primary:active { transform: translateY(0); filter: brightness(0.97); }
+  .btn-ghost {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text-2);
+  }
+  .btn-ghost:hover { border-color: var(--border-hover); color: var(--text); }
+  .btn-danger {
+    background: rgba(248,113,113,0.1);
+    border: 1px solid rgba(248,113,113,0.2);
+    color: var(--danger);
+  }
+  .btn-danger:hover { background: rgba(248,113,113,0.18); }
+  .btn-sm { height: 34px; font-size: 12px; padding: 0 12px; border-radius: 8px; gap: 5px; }
 
-        .winner-glow {
-            text-shadow: 0 0 40px rgba(99, 102, 241, 0.5);
-        }
+  /* INPUT */
+  textarea, input[type="text"] {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    padding: 11px 14px;
+    resize: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+  }
+  textarea:focus, input[type="text"]:focus {
+    border-color: rgba(124,106,247,0.5);
+    box-shadow: 0 0 0 3px rgba(124,106,247,0.1);
+  }
+  textarea::placeholder, input::placeholder { color: var(--text-3); }
+  textarea::-webkit-scrollbar { width: 3px; }
+  textarea::-webkit-scrollbar-thumb { background: rgba(124,106,247,0.3); border-radius: 2px; }
 
-        .name-display {
-            background: linear-gradient(135deg, #818cf8, #c084fc);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
+  /* MEMBER */
+  .member-add-row { display: flex; gap: 8px; margin-bottom: 12px; }
+  .member-list {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    max-height: 260px;
+    overflow-y: auto;
+    padding-right: 2px;
+  }
+  .member-list::-webkit-scrollbar { width: 3px; }
+  .member-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+  .member-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 9px 12px;
+    transition: all 0.15s;
+    position: relative;
+    overflow: hidden;
+  }
+  .member-item.won {
+    border-color: rgba(251,191,36,0.2);
+    background: rgba(251,191,36,0.04);
+  }
+  .member-item.won::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--gold);
+  }
+  .member-avatar {
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700;
+    flex-shrink: 0;
+    font-family: 'Syne', sans-serif;
+  }
+  .member-name { flex: 1; font-size: 13px; font-weight: 500; color: var(--text); }
+  .member-item.won .member-name { color: #d4a820; }
+  .member-badge {
+    font-size: 10px; font-weight: 600;
+    padding: 2px 8px; border-radius: 20px;
+    background: rgba(251,191,36,0.12);
+    border: 1px solid rgba(251,191,36,0.25);
+    color: var(--gold);
+    white-space: nowrap;
+  }
+  .del-btn {
+    background: none; border: none; cursor: pointer;
+    color: var(--text-3); padding: 4px; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s; flex-shrink: 0;
+  }
+  .del-btn:hover { color: var(--danger); background: rgba(248,113,113,0.1); }
 
-        @keyframes pulse-ring {
-            0% { transform: scale(0.8); opacity: 1; }
-            100% { transform: scale(1.6); opacity: 0; }
-        }
-        .pulse-ring {
-            position: absolute;
-            inset: 0;
-            border-radius: 50%;
-            border: 2px solid rgba(99, 102, 241, 0.5);
-            animation: pulse-ring 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
-        }
-        .pulse-ring-2 {
-            animation-delay: 0.5s;
-        }
+  /* STATS */
+  .stats-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .stat-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px;
+    text-align: center;
+  }
+  .stat-value { font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 800; color: var(--text); line-height: 1; margin-bottom: 4px; }
+  .stat-label { font-size: 10px; color: var(--text-3); font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-12px) rotate(5deg); }
-        }
-        .float-icon { animation: float 3s ease-in-out infinite; }
+  /* PROGRESS */
+  .progress-wrap { margin-bottom: 12px; }
+  .progress-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-2); font-weight: 500; margin-bottom: 7px; }
+  .progress-track { height: 5px; background: var(--surface2); border-radius: 6px; overflow: hidden; border: 1px solid var(--border); }
+  .progress-fill {
+    height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 6px; transition: width 0.6s cubic-bezier(0.34,1.56,0.64,1);
+  }
 
-        @keyframes shimmer {
-            0% { background-position: -200% center; }
-            100% { background-position: 200% center; }
-        }
-        .shimmer-text {
-            background: linear-gradient(90deg, #818cf8, #e879f9, #818cf8);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: shimmer 3s linear infinite;
-        }
+  /* DIVIDER */
+  .divider { height: 1px; background: var(--border); margin: 14px 0; }
 
-        .divider {
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
-        }
+  /* ALERT */
+  .alert { display: none; align-items: center; gap: 8px; padding: 9px 12px; border-radius: 10px; font-size: 12px; font-weight: 500; margin-bottom: 12px; }
+  .alert.show { display: flex; }
+  .alert-danger { background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.25); color: var(--danger); }
+  .alert-success { background: rgba(74,222,128,0.08); border: 1px solid rgba(74,222,128,0.2); color: var(--success); }
 
-        .timer-ring {
-            stroke-dasharray: 251;
-            stroke-dashoffset: 0;
-            transition: stroke-dashoffset 1s linear;
-            transform: rotate(-90deg);
-            transform-origin: center;
-        }
+  /* SHUFFLE SCREEN */
+  #screen-shuffle { padding: 28px 22px; text-align: center; }
+  .timer-wrap {
+    position: relative; display: inline-flex;
+    align-items: center; justify-content: center;
+    width: 96px; height: 96px; margin-bottom: 20px;
+  }
+  .timer-svg { position: absolute; inset: 0; }
+  .timer-number {
+    font-family: 'Syne', sans-serif; font-size: 30px; font-weight: 800;
+    color: var(--text); position: relative; z-index: 1; transition: color 0.3s;
+  }
+  .shuffle-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-3); margin-bottom: 20px; }
+  .name-reel {
+    height: 76px; display: flex; align-items: center; justify-content: center;
+    background: var(--surface2); border: 1px solid var(--border); border-radius: 14px;
+    margin-bottom: 20px; overflow: hidden; position: relative;
+  }
+  .name-reel::before, .name-reel::after {
+    content: ''; position: absolute; left: 0; right: 0; height: 20px; z-index: 2; pointer-events: none;
+  }
+  .name-reel::before { top: 0; background: linear-gradient(to bottom, var(--surface2), transparent); }
+  .name-reel::after { bottom: 0; background: linear-gradient(to top, var(--surface2), transparent); }
+  #shuffleName {
+    font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800;
+    background: linear-gradient(135deg, #a89ef9, #d89bf5);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    padding: 0 16px; text-align: center; line-height: 1.2;
+  }
+  .drum-icon { font-size: 32px; animation: drumbeat 0.6s ease-in-out infinite alternate; display: inline-block; }
+  @keyframes drumbeat { from { transform: scale(1) rotate(-6deg); } to { transform: scale(1.12) rotate(6deg); } }
 
-        scrollbar-width: thin;
-        textarea::-webkit-scrollbar { width: 4px; }
-        textarea::-webkit-scrollbar-track { background: transparent; }
-        textarea::-webkit-scrollbar-thumb { background: rgba(99,102,241,0.3); border-radius: 2px; }
-    </style>
+  /* WINNER SCREEN */
+  #screen-winner { padding: 28px 22px; text-align: center; }
+  .crown-wrap { position: relative; display: inline-block; margin-bottom: 16px; }
+  .crown-icon { font-size: 52px; display: block; animation: crownFloat 3s ease-in-out infinite; }
+  @keyframes crownFloat { 0%,100%{transform:translateY(0) rotate(-3deg);} 50%{transform:translateY(-10px) rotate(3deg);} }
+  .crown-ring {
+    position: absolute; inset: -8px; border-radius: 50%;
+    border: 2px solid rgba(251,191,36,0.3);
+    animation: ringExpand 2s ease-out infinite;
+  }
+  .crown-ring-2 { animation-delay: 0.8s; }
+  @keyframes ringExpand { 0%{transform:scale(0.6);opacity:1;} 100%{transform:scale(1.8);opacity:0;} }
+  .winner-round-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-3); margin-bottom: 8px; }
+  .winner-name {
+    font-family: 'Syne', sans-serif; font-size: 36px; font-weight: 800;
+    background: linear-gradient(135deg, #fbbf24, #f59e0b, #fde68a);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    line-height: 1.2; margin-bottom: 6px; word-break: break-word; padding: 0 8px;
+  }
+  .winner-sub { font-size: 13px; color: var(--text-3); margin-bottom: 22px; }
+  .winner-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+  /* HISTORY */
+  .history-list { display: flex; flex-direction: column; gap: 7px; max-height: 380px; overflow-y: auto; }
+  .history-list::-webkit-scrollbar { width: 3px; }
+  .history-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+  .history-item {
+    display: flex; align-items: center; gap: 12px;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 12px; padding: 11px 14px; transition: border-color 0.15s;
+  }
+  .history-item:hover { border-color: var(--border-hover); }
+  .history-round { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 800; color: var(--text-3); width: 26px; flex-shrink: 0; text-align: center; }
+  .history-info { flex: 1; min-width: 0; }
+  .history-name { font-size: 14px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; }
+  .history-date { font-size: 11px; color: var(--text-3); }
+  .history-trophy { font-size: 18px; }
+
+  /* EMPTY STATE */
+  .empty-state { text-align: center; padding: 28px 0; }
+  .empty-icon { font-size: 32px; margin-bottom: 8px; opacity: 0.3; }
+  .empty-text { font-size: 13px; color: var(--text-3); line-height: 1.5; }
+
+  /* SETTINGS */
+  .setting-row { display: flex; align-items: center; justify-content: space-between; padding: 13px 0; border-bottom: 1px solid var(--border); }
+  .setting-row:last-child { border-bottom: none; }
+  .setting-label { font-size: 13px; font-weight: 500; color: var(--text-2); }
+  .setting-desc { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+  .num-input-wrap { display: flex; align-items: center; gap: 4px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 2px; }
+  .num-btn {
+    background: none; border: none; color: var(--text-2); font-size: 16px; font-weight: 700;
+    cursor: pointer; width: 28px; height: 28px; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center; transition: all 0.15s;
+  }
+  .num-btn:hover { background: var(--border); color: var(--text); }
+  .num-display { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; color: var(--text); min-width: 26px; text-align: center; }
+
+  /* INNER TABS */
+  .inner-tabs { display:flex; gap:3px; background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:3px; margin-bottom:14px; }
+  .inner-tab { flex:1; background:none; border:none; color:var(--text-2); font-family:'DM Sans',sans-serif; font-size:12px; font-weight:500; padding:7px 6px; border-radius:7px; cursor:pointer; transition:all 0.18s; text-align:center; white-space:nowrap; }
+  .inner-tab.active { background:var(--surface); color:var(--text); border:1px solid var(--border-hover); }
+  .inner-tab:hover:not(.active) { color:var(--text); }
+  #dropzone:hover, #dropzone.drag-over { border-color: rgba(124,106,247,0.5); background: rgba(124,106,247,0.05); }
+
+
+  .toggle-track {
+    position: relative; display: inline-block;
+    width: 44px; height: 24px;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 12px; cursor: pointer; transition: all 0.2s; flex-shrink: 0;
+  }
+  .toggle-thumb {
+    position: absolute; left: 3px; top: 50%; transform: translateY(-50%);
+    width: 18px; height: 18px; background: #fff; border-radius: 50%;
+    transition: all 0.2s; opacity: 0.3;
+  }
+  .toggle-track.on { background: rgba(124,106,247,0.5); border-color: rgba(124,106,247,0.5); }
+  .toggle-track.on .toggle-thumb { left: 23px; opacity: 1; }
+
+  /* UTIL */
+  .hidden { display: none !important; }
+  .mb-12 { margin-bottom: 12px; }
+  .footer { margin-top: 20px; text-align: center; font-size: 12px; color: var(--text-3); }
+
+  /* AVATAR COLORS */
+  .av-0 { background: rgba(124,106,247,0.18); color: #a89ef9; }
+  .av-1 { background: rgba(251,191,36,0.14); color: #fbbf24; }
+  .av-2 { background: rgba(52,211,153,0.14); color: #34d399; }
+  .av-3 { background: rgba(248,113,113,0.14); color: #f87171; }
+  .av-4 { background: rgba(99,179,237,0.14); color: #63b3ed; }
+  .av-5 { background: rgba(245,158,11,0.14); color: #f59e0b; }
+
+  @media (max-width: 400px) {
+    .winner-name { font-size: 28px; }
+    #shuffleName { font-size: 22px; }
+    .stats-row { gap: 6px; }
+  }
+</style>
 </head>
-<body class="flex items-center justify-center p-4 min-h-screen">
+<body>
+<div class="app-wrapper">
 
-    <div class="w-full max-w-md">
+  <!-- TOP NAV -->
+  <div class="top-nav">
+    <div class="logo">Arisan<span>Pro</span></div>
+    <div class="nav-tabs">
+      <button class="nav-tab active" onclick="switchPage('undian')">Undian</button>
+      <button class="nav-tab" onclick="switchPage('history')">Riwayat</button>
+      <button class="nav-tab" onclick="switchPage('settings')">Pengaturan</button>
+    </div>
+  </div>
 
-        <!-- Header -->
-        <div class="text-center mb-6">
-            <span class="badge inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-widest mb-3">
-                <span class="w-1.5 h-1.5 rounded-full bg-indigo-400 inline-block"></span>
-                Arisan Digital Pro
-            </span>
-            <h1 class="text-4xl font-black text-white tracking-tight">SIAPA MENANG?</h1>
-            <p class="text-slate-500 text-sm mt-1.5">Kocok nama secara adil & transparan</p>
-        </div>
+  <!-- ====== PAGE: UNDIAN ====== -->
+  <div id="page-undian">
 
-        <!-- Main Card -->
-        <div class="glass-card rounded-3xl overflow-hidden shadow-2xl">
-
-            <!-- Input UI -->
-            <div id="ui-input" class="p-6 space-y-4">
-                <div>
-                    <label class="block text-xs font-semibold text-slate-400 uppercase tracking-widest mb-2.5">
-                        Daftar Peserta Arisan
-                    </label>
-                    <textarea id="namesInput" rows="9"
-                        class="glass-input w-full rounded-2xl px-4 py-3 text-sm font-medium resize-none leading-relaxed"
-                        placeholder="Tulis nama peserta (satu per baris)&#10;&#10;Contoh:&#10;Ibu Siska&#10;Pak RT&#10;Mbak Dini&#10;Bu Yanti&#10;Pak Hendra"></textarea>
-                </div>
-
-                <div class="divider"></div>
-
-                <div id="participant-count" class="flex items-center justify-between text-xs text-slate-500 px-0.5">
-                    <span>Peserta terdaftar</span>
-                    <span id="count-display" class="font-semibold text-slate-400">0 orang</span>
-                </div>
-
-                <button onclick="startArisan()"
-                    class="btn-primary w-full text-white font-bold py-4 rounded-2xl text-base flex items-center justify-center gap-2.5">
-                    <span>Mulai Pengundian</span>
-                    <span class="text-lg">🎲</span>
-                </button>
-            </div>
-
-            <!-- Shuffling UI -->
-            <div id="ui-shuffling" class="hidden p-6">
-                <div class="text-center mb-6">
-                    <!-- Timer Circle -->
-                    <div class="relative inline-flex items-center justify-center w-20 h-20 mb-4">
-                        <svg class="w-20 h-20 absolute" viewBox="0 0 90 90">
-                            <circle cx="45" cy="45" r="40" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="5"/>
-                            <circle id="timerCircle" cx="45" cy="45" r="40" fill="none" stroke="url(#timerGrad)" stroke-width="5" stroke-linecap="round" class="timer-ring"/>
-                            <defs>
-                                <linearGradient id="timerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                                    <stop offset="0%" stop-color="#6366f1"/>
-                                    <stop offset="100%" stop-color="#a855f7"/>
-                                </linearGradient>
-                            </defs>
-                        </svg>
-                        <span id="timer" class="text-2xl font-black text-white relative z-10">30</span>
-                    </div>
-                    <p class="text-slate-500 text-xs font-semibold uppercase tracking-widest">Sedang mengocok nama...</p>
-                </div>
-
-                <div class="divider mb-6"></div>
-
-                <!-- Name Display -->
-                <div class="text-center py-6">
-                    <div class="mb-2 text-xs text-slate-500 uppercase tracking-widest font-semibold">Nama Berputar</div>
-                    <div id="nameDisplay" class="name-display text-5xl font-black uppercase tracking-tight min-h-[64px] flex items-center justify-center transition-all duration-75">
-                        ---
-                    </div>
-                </div>
-
-                <div class="divider my-4"></div>
-
-                <div class="text-center mt-4">
-                    <div class="float-icon text-4xl inline-block">🎰</div>
-                </div>
-            </div>
-
-            <!-- Winner UI -->
-            <div id="ui-winner" class="hidden p-6 text-center">
-                <div class="relative inline-flex items-center justify-center w-20 h-20 mb-5">
-                    <div class="pulse-ring"></div>
-                    <div class="pulse-ring pulse-ring-2"></div>
-                    <div class="relative z-10 text-5xl">👑</div>
-                </div>
-
-                <p class="text-xs font-semibold text-slate-500 uppercase tracking-[0.2em] mb-3">Pemenang Arisan</p>
-
-                <h2 id="finalWinner" class="shimmer-text text-4xl font-black break-words mb-2 min-h-[52px] px-2 leading-tight"></h2>
-
-                <p class="text-slate-600 text-sm mb-8">Selamat! Semoga rejeki selalu lancar 🎉</p>
-
-                <div class="divider mb-6"></div>
-
-                <div class="flex gap-3">
-                    <button onclick="resetGame()"
-                        class="btn-secondary flex-1 font-semibold py-3 px-6 rounded-xl text-sm">
-                        Kocok Lagi
-                    </button>
-                    <button onclick="resetAll()"
-                        class="btn-secondary flex-1 font-semibold py-3 px-6 rounded-xl text-sm">
-                        Reset Daftar
-                    </button>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- Footer -->
-        <p class="text-center text-slate-600 text-xs mt-5">Pengundian acak yang adil & transparan ✨</p>
-
+    <!-- Stats -->
+    <div class="stats-row" id="statsRow">
+      <div class="stat-box">
+        <div class="stat-value" id="stat-total">0</div>
+        <div class="stat-label">Peserta</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value" id="stat-menang" style="color:var(--gold)">0</div>
+        <div class="stat-label">Sudah Menang</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value" id="stat-sisa" style="color:var(--accent)">0</div>
+        <div class="stat-label">Sisa Giliran</div>
+      </div>
     </div>
 
-    <script>
-        let intervalShuffle;
-        let intervalTimer;
-        let savedNames = [];
+    <!-- Progress -->
+    <div class="progress-wrap" id="progressWrap">
+      <div class="progress-label">
+        <span>Progress Arisan</span>
+        <span id="progressPct">0%</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progressFill" style="width:0%"></div>
+      </div>
+    </div>
 
-        // Live participant count
-        document.getElementById('namesInput').addEventListener('input', updateCount);
+    <!-- Member Card -->
+    <div class="card mb-12" id="memberCard">
+      <div class="card-header">
+        <span class="card-title">Daftar Peserta</span>
+        <div style="display:flex;gap:6px;align-items:center;">
+          <span class="badge-pill" id="memberCountBadge">0 orang</span>
+          <button class="btn btn-danger btn-sm" onclick="clearAllMembers()" style="padding:0 10px;height:28px;font-size:11px;">Hapus Semua</button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="alert alert-danger" id="alertBox">
+          <span>⚠</span><span id="alertMsg">Masukkan minimal 2 peserta.</span>
+        </div>
 
-        function updateCount() {
-            const input = document.getElementById('namesInput').value;
-            const names = input.split('\n').map(n => n.trim()).filter(n => n !== "");
-            const countEl = document.getElementById('count-display');
-            countEl.textContent = names.length + ' orang';
-            countEl.className = names.length >= 2
-                ? 'font-semibold text-indigo-400'
-                : 'font-semibold text-slate-400';
-        }
+        <!-- Inner Tabs -->
+        <div class="inner-tabs" id="inputModeTabs">
+          <button class="inner-tab active" onclick="switchInputMode('single')">Satu per Satu</button>
+          <button class="inner-tab" onclick="switchInputMode('bulk')">Import Massal</button>
+          <button class="inner-tab" onclick="switchInputMode('file')">Upload File</button>
+        </div>
 
-        function startArisan() {
-            const input = document.getElementById('namesInput').value;
-            const names = input.split('\n').map(n => n.trim()).filter(n => n !== "");
+        <!-- MODE: Single -->
+        <div id="mode-single">
+          <div class="member-add-row">
+            <input type="text" id="newNameInput" placeholder="Nama peserta baru…" onkeydown="if(event.key==='Enter')addMember()" maxlength="40">
+            <button class="btn btn-primary btn-sm" onclick="addMember()" style="flex-shrink:0;padding:0 16px;">+ Tambah</button>
+          </div>
+        </div>
 
-            if (names.length < 2) {
-                // Shake effect on textarea
-                const ta = document.getElementById('namesInput');
-                ta.style.borderColor = 'rgba(239, 68, 68, 0.6)';
-                ta.style.boxShadow = '0 0 0 3px rgba(239, 68, 68, 0.15)';
-                setTimeout(() => {
-                    ta.style.borderColor = '';
-                    ta.style.boxShadow = '';
-                }, 1500);
-                return;
-            }
+        <!-- MODE: Bulk paste -->
+        <div id="mode-bulk" class="hidden">
+          <div style="margin-bottom:8px;">
+            <textarea id="bulkInput" rows="6" placeholder="Tulis atau paste banyak nama sekaligus.&#10;Satu nama per baris:&#10;&#10;Ibu Siska&#10;Pak RT&#10;Mbak Dini&#10;Bu Yanti&#10;..."></textarea>
+          </div>
+          <div style="display:flex; gap:8px; align-items:center;">
+            <span id="bulkPreviewCount" style="font-size:12px; color:var(--text-3); flex:1;"></span>
+            <button class="btn btn-ghost btn-sm" onclick="clearBulkInput()">Bersihkan</button>
+            <button class="btn btn-primary btn-sm" onclick="importBulk()" style="padding:0 16px;">⬇ Import Semua</button>
+          </div>
+        </div>
 
-            savedNames = names;
+        <!-- MODE: File upload -->
+        <div id="mode-file" class="hidden">
+          <div id="dropzone" onclick="document.getElementById('fileInput').click()" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="dropFile(event)"
+            style="border: 2px dashed var(--border); border-radius:12px; padding:28px 16px; text-align:center; cursor:pointer; transition:all 0.2s; margin-bottom:10px;">
+            <div style="font-size:28px; margin-bottom:8px;">📂</div>
+            <div style="font-size:13px; font-weight:600; color:var(--text-2); margin-bottom:4px;">Klik atau seret file ke sini</div>
+            <div style="font-size:11px; color:var(--text-3);">Format: .txt atau .csv (satu nama per baris)</div>
+          </div>
+          <input type="file" id="fileInput" accept=".txt,.csv" style="display:none" onchange="handleFile(this)">
+          <div id="filePreview" class="hidden" style="background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:10px 14px; margin-bottom:8px; font-size:12px; color:var(--text-2);"></div>
+          <div style="display:flex; gap:8px; justify-content:flex-end;">
+            <button class="btn btn-ghost btn-sm" onclick="clearFileInput()">Batal</button>
+            <button class="btn btn-primary btn-sm" id="importFileBtn" onclick="importFromFile()" style="padding:0 16px;" disabled>⬇ Import</button>
+          </div>
+        </div>
 
-            document.getElementById('ui-input').classList.add('hidden');
-            document.getElementById('ui-shuffling').classList.remove('hidden');
+        <!-- Member list (always visible) -->
+        <div style="margin-top:12px;">
+          <div style="font-size:11px; font-weight:600; color:var(--text-3); text-transform:uppercase; letter-spacing:0.07em; margin-bottom:8px;" id="memberListLabel">Peserta Terdaftar</div>
+          <div class="member-list" id="memberList">
+            <div class="empty-state" id="emptyMembers">
+              <div class="empty-icon">👥</div>
+              <div class="empty-text">Belum ada peserta.<br>Tambahkan nama di atas.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-            let timeLeft = 30;
-            const timerEl = document.getElementById('timer');
-            const nameEl = document.getElementById('nameDisplay');
-            const circle = document.getElementById('timerCircle');
-            const circumference = 251;
+    <!-- Start Button -->
+    <button class="btn btn-primary btn-full" id="startBtn" onclick="startArisan()" style="height:52px;font-size:15px;border-radius:14px;margin-bottom:12px;">
+      <span>🎲</span> Mulai Pengundian
+    </button>
 
-            circle.style.strokeDashoffset = 0;
+    <!-- SHUFFLE SCREEN -->
+    <div class="card hidden" id="screen-shuffle">
+      <div class="timer-wrap">
+        <svg class="timer-svg" viewBox="0 0 96 96">
+          <circle cx="48" cy="48" r="42" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="6"/>
+          <circle id="timerArc" cx="48" cy="48" r="42" fill="none" stroke="url(#arcGrad)"
+            stroke-width="6" stroke-linecap="round"
+            stroke-dasharray="263.89" stroke-dashoffset="0"
+            transform="rotate(-90 48 48)"/>
+          <defs>
+            <linearGradient id="arcGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#7c6af7"/>
+              <stop offset="100%" stop-color="#b06ef3"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <div class="timer-number" id="timerNum">30</div>
+      </div>
+      <div class="shuffle-label">Mengocok nama peserta…</div>
+      <div class="name-reel"><div id="shuffleName">—</div></div>
+      <div class="drum-icon">🎰</div>
+    </div>
 
-            intervalTimer = setInterval(() => {
-                timeLeft--;
-                timerEl.innerText = timeLeft;
-                // Update circle
-                const offset = circumference * (1 - timeLeft / 30);
-                circle.style.strokeDashoffset = offset;
+    <!-- WINNER SCREEN -->
+    <div class="card hidden" id="screen-winner">
+      <div class="crown-wrap">
+        <div class="crown-ring"></div>
+        <div class="crown-ring crown-ring-2"></div>
+        <span class="crown-icon">👑</span>
+      </div>
+      <div class="winner-round-label" id="winnerRoundLabel">Putaran 1</div>
+      <div class="winner-name" id="winnerName">—</div>
+      <div class="winner-sub">Selamat! Semoga rejekinya berkah 🎉</div>
+      <div class="winner-actions">
+        <button class="btn btn-primary" onclick="nextRound()"><span>🔄</span> Kocok Lagi</button>
+        <button class="btn btn-ghost" onclick="showInputScreen()"><span>✏️</span> Edit Daftar</button>
+      </div>
+    </div>
 
-                if (timeLeft <= 5) {
-                    timerEl.style.color = '#f87171';
-                    circle.style.stroke = '#f87171';
-                }
+  </div><!-- /page-undian -->
 
-                if (timeLeft <= 0) stopArisan(names);
-            }, 1000);
+  <!-- ====== PAGE: HISTORY ====== -->
+  <div id="page-history" class="hidden">
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Riwayat Undian</span>
+        <button class="btn btn-danger btn-sm" onclick="clearHistory()" style="padding:0 10px;height:28px;font-size:11px;">Hapus Semua</button>
+      </div>
+      <div class="card-body">
+        <div class="history-list" id="historyList">
+          <div class="empty-state" id="emptyHistory">
+            <div class="empty-icon">📋</div>
+            <div class="empty-text">Belum ada riwayat undian.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-            intervalShuffle = setInterval(() => {
-                const randomName = names[Math.floor(Math.random() * names.length)];
-                nameEl.innerText = randomName;
-            }, 80);
-        }
+  <!-- ====== PAGE: SETTINGS ====== -->
+  <div id="page-settings" class="hidden">
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Pengaturan</span>
+      </div>
+      <div class="card-body">
 
-        function stopArisan(names) {
-            clearInterval(intervalTimer);
-            clearInterval(intervalShuffle);
+        <div class="setting-row">
+          <div>
+            <div class="setting-label">Durasi Kocok (detik)</div>
+            <div class="setting-desc">Lama animasi pengundian</div>
+          </div>
+          <div class="num-input-wrap">
+            <button class="num-btn" onclick="changeTimer(-5)">−</button>
+            <div class="num-display" id="timerSetting">30</div>
+            <button class="num-btn" onclick="changeTimer(5)">+</button>
+          </div>
+        </div>
 
-            const winner = names[Math.floor(Math.random() * names.length)];
+        <div class="setting-row">
+          <div>
+            <div class="setting-label">Jumlah Pemenang</div>
+            <div class="setting-desc">Berapa nama yang dipilih tiap putaran</div>
+          </div>
+          <div class="num-input-wrap">
+            <button class="num-btn" onclick="changeWinners(-1)">−</button>
+            <div class="num-display" id="winnersSetting">1</div>
+            <button class="num-btn" onclick="changeWinners(1)">+</button>
+          </div>
+        </div>
 
-            document.getElementById('ui-shuffling').classList.add('hidden');
-            document.getElementById('ui-winner').classList.remove('hidden');
-            document.getElementById('finalWinner').innerText = winner;
+        <div class="setting-row">
+          <div>
+            <div class="setting-label">Skip yang Sudah Menang</div>
+            <div class="setting-desc">Peserta yang menang tidak masuk undian berikutnya</div>
+          </div>
+          <div class="toggle-track on" id="toggleTrack" onclick="toggleSkip(this)">
+            <div class="toggle-thumb" id="toggleThumb"></div>
+          </div>
+        </div>
 
-            fireConfetti();
-        }
+        <div class="divider"></div>
 
-        function resetGame() {
-            // Keep same name list, reshuffle
-            document.getElementById('ui-winner').classList.add('hidden');
-            document.getElementById('ui-input').classList.add('hidden');
+        <button class="btn btn-danger btn-full" onclick="resetAll()">🗑 Reset Semua Data</button>
+      </div>
+    </div>
 
-            // Re-trigger with saved names
-            document.getElementById('ui-shuffling').classList.remove('hidden');
+    <div class="card" style="margin-top:10px;">
+      <div class="card-body" style="text-align:center; padding:16px 22px;">
+        <div style="font-size:12px; color:var(--text-3); line-height:1.8;">
+          <strong style="color:var(--text-2); font-family:'Syne',sans-serif;">Arisan Digital Pro</strong><br>
+          Pengundian acak yang adil &amp; transparan.<br>
+          Seluruh data disimpan di perangkat Anda.
+        </div>
+      </div>
+    </div>
+  </div>
 
-            const names = savedNames;
-            let timeLeft = 30;
-            const timerEl = document.getElementById('timer');
-            const nameEl = document.getElementById('nameDisplay');
-            const circle = document.getElementById('timerCircle');
-            const circumference = 251;
+  <div class="footer">Data tersimpan otomatis di perangkat ini ✦</div>
 
-            timerEl.style.color = 'white';
-            circle.style.stroke = 'url(#timerGrad)';
-            circle.style.strokeDashoffset = 0;
-            timerEl.innerText = '30';
+</div><!-- /app-wrapper -->
 
-            intervalTimer = setInterval(() => {
-                timeLeft--;
-                timerEl.innerText = timeLeft;
-                const offset = circumference * (1 - timeLeft / 30);
-                circle.style.strokeDashoffset = offset;
+<script>
+// ═══════════════════════════════════
+//  STATE
+// ═══════════════════════════════════
+let S = {
+  members: [],      // [{id, name, wins:[roundNums]}]
+  history: [],      // [{round, name, timestamp}]
+  round: 1,
+  timerDuration: 30,
+  winnersCount: 1,
+  skipWinners: true,
+  nextId: 1,
+};
 
-                if (timeLeft <= 5) {
-                    timerEl.style.color = '#f87171';
-                }
+let timerInt = null;
+let shuffleInt = null;
 
-                if (timeLeft <= 0) stopArisan(names);
-            }, 1000);
+// ═══════════════════════════════════
+//  STORAGE
+// ═══════════════════════════════════
+function save() {
+  try { localStorage.setItem('arisanpro_v3', JSON.stringify(S)); } catch(e) {}
+}
+function load() {
+  try {
+    const d = localStorage.getItem('arisanpro_v3');
+    if (d) S = Object.assign(S, JSON.parse(d));
+  } catch(e) {}
+}
 
-            intervalShuffle = setInterval(() => {
-                const randomName = names[Math.floor(Math.random() * names.length)];
-                nameEl.innerText = randomName;
-            }, 80);
-        }
+// ═══════════════════════════════════
+//  RENDER
+// ═══════════════════════════════════
+function render() {
+  renderMembers();
+  renderStats();
+  renderHistory();
+  renderToggle();
+  document.getElementById('timerSetting').textContent = S.timerDuration;
+  document.getElementById('winnersSetting').textContent = S.winnersCount;
+}
 
-        function resetAll() {
-            clearInterval(intervalTimer);
-            clearInterval(intervalShuffle);
-            document.getElementById('ui-winner').classList.add('hidden');
-            document.getElementById('ui-shuffling').classList.add('hidden');
-            document.getElementById('ui-input').classList.remove('hidden');
-            document.getElementById('namesInput').value = '';
-            document.getElementById('count-display').textContent = '0 orang';
-            document.getElementById('count-display').className = 'font-semibold text-slate-400';
-            document.getElementById('timer').innerText = '30';
-            document.getElementById('timer').style.color = 'white';
-            const circle = document.getElementById('timerCircle');
-            circle.style.strokeDashoffset = 0;
-            circle.style.stroke = 'url(#timerGrad)';
-            savedNames = [];
-        }
+function renderMembers() {
+  const list = document.getElementById('memberList');
+  const countBadge = document.getElementById('memberCountBadge');
+  countBadge.textContent = S.members.length + ' orang';
 
-        function fireConfetti() {
-            const duration = 3.5 * 1000;
-            const end = Date.now() + duration;
+  if (S.members.length === 0) {
+    list.innerHTML = '';
+    list.insertAdjacentHTML('beforeend', `
+      <div class="empty-state" id="emptyMembers">
+        <div class="empty-icon">👥</div>
+        <div class="empty-text">Belum ada peserta.<br>Tambahkan nama di atas.</div>
+      </div>`);
+    return;
+  }
 
-            (function frame() {
-                confetti({ particleCount: 4, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#6366f1', '#a855f7', '#e879f9', '#818cf8'] });
-                confetti({ particleCount: 4, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#6366f1', '#a855f7', '#e879f9', '#818cf8'] });
-                if (Date.now() < end) requestAnimationFrame(frame);
-            }());
-        }
-    </script>
+  let html = '';
+  S.members.forEach((m, i) => {
+    const hasWon = m.wins && m.wins.length > 0;
+    const initial = m.name.charAt(0).toUpperCase();
+    const avC = 'av-' + (i % 6);
+    const wonC = hasWon ? 'won' : '';
+    const badge = hasWon ? `<span class="member-badge">🏆 Rnd ${m.wins.join(', ')}</span>` : '';
+    html += `<div class="member-item ${wonC}">
+      <div class="member-avatar ${avC}">${initial}</div>
+      <span class="member-name">${esc(m.name)}</span>
+      ${badge}
+      <button class="del-btn" onclick="removeMember(${m.id})">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>`;
+  });
+  list.innerHTML = html;
+}
+
+function renderStats() {
+  const total = S.members.length;
+  const won = S.members.filter(m => m.wins && m.wins.length > 0).length;
+  document.getElementById('stat-total').textContent = total;
+  document.getElementById('stat-menang').textContent = won;
+  document.getElementById('stat-sisa').textContent = total - won;
+  const pct = total > 0 ? Math.round(won / total * 100) : 0;
+  document.getElementById('progressPct').textContent = pct + '%';
+  document.getElementById('progressFill').style.width = pct + '%';
+}
+
+function renderHistory() {
+  const list = document.getElementById('historyList');
+  if (S.history.length === 0) {
+    list.innerHTML = `<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-text">Belum ada riwayat undian.</div></div>`;
+    return;
+  }
+  let html = '';
+  [...S.history].reverse().forEach(h => {
+    const d = new Date(h.timestamp);
+    const ds = d.toLocaleDateString('id-ID', {day:'numeric',month:'short',year:'numeric'})
+             + ' · ' + d.toLocaleTimeString('id-ID', {hour:'2-digit',minute:'2-digit'});
+    html += `<div class="history-item">
+      <div class="history-round">#${h.round}</div>
+      <div class="history-info">
+        <div class="history-name">${esc(h.name)}</div>
+        <div class="history-date">${ds}</div>
+      </div>
+      <div class="history-trophy">🏆</div>
+    </div>`;
+  });
+  list.innerHTML = html;
+}
+
+function renderToggle() {
+  const track = document.getElementById('toggleTrack');
+  if (S.skipWinners) track.classList.add('on'); else track.classList.remove('on');
+}
+
+// ═══════════════════════════════════
+//  MEMBERS
+// ═══════════════════════════════════
+function addMember() {
+  const inp = document.getElementById('newNameInput');
+  const name = inp.value.trim();
+  if (!name) { inp.focus(); return; }
+  if (S.members.some(m => m.name.toLowerCase() === name.toLowerCase())) {
+    showAlert('Nama "' + name + '" sudah ada dalam daftar.');
+    inp.select(); return;
+  }
+  S.members.push({ id: S.nextId++, name, wins: [] });
+  inp.value = '';
+  inp.focus();
+  hideAlert();
+  save(); render();
+}
+
+function removeMember(id) {
+  S.members = S.members.filter(m => m.id !== id);
+  save(); render();
+}
+
+function clearAllMembers() {
+  if (!S.members.length) return;
+  if (!confirm('Hapus semua peserta dari daftar?')) return;
+  S.members = [];
+  save(); render();
+}
+
+// ═══════════════════════════════════
+//  INPUT MODE SWITCHING
+// ═══════════════════════════════════
+function switchInputMode(mode) {
+  ['single','bulk','file'].forEach((m, i) => {
+    document.getElementById('mode-' + m).classList.toggle('hidden', m !== mode);
+    document.querySelectorAll('.inner-tab')[i].classList.toggle('active', m === mode);
+  });
+  if (mode === 'bulk') {
+    document.getElementById('bulkInput').focus();
+    updateBulkCount();
+  }
+}
+
+// ═══════════════════════════════════
+//  BULK IMPORT
+// ═══════════════════════════════════
+function updateBulkCount() {
+  const val = document.getElementById('bulkInput').value;
+  const names = parseNames(val);
+  const countEl = document.getElementById('bulkPreviewCount');
+  if (names.length === 0) { countEl.textContent = ''; return; }
+  const dupes = names.filter(n => S.members.some(m => m.name.toLowerCase() === n.toLowerCase()));
+  const newCount = names.length - dupes.length;
+  countEl.textContent = `${names.length} nama terdeteksi · ${newCount} baru · ${dupes.length} duplikat`;
+  countEl.style.color = newCount > 0 ? 'var(--accent)' : 'var(--text-3)';
+}
+
+function importBulk() {
+  const val = document.getElementById('bulkInput').value;
+  const names = parseNames(val);
+  if (names.length === 0) { showAlert('Tidak ada nama yang valid untuk diimport.'); return; }
+
+  let added = 0, skipped = 0;
+  names.forEach(name => {
+    if (S.members.some(m => m.name.toLowerCase() === name.toLowerCase())) { skipped++; return; }
+    S.members.push({ id: S.nextId++, name, wins: [] });
+    added++;
+  });
+
+  document.getElementById('bulkInput').value = '';
+  updateBulkCount();
+  hideAlert();
+  save(); render();
+
+  if (added > 0) {
+    showSuccess(`✓ ${added} peserta berhasil ditambahkan${skipped > 0 ? `, ${skipped} dilewati (duplikat)` : ''}.`);
+  } else {
+    showAlert(`Semua ${skipped} nama sudah ada dalam daftar.`);
+  }
+}
+
+function clearBulkInput() {
+  document.getElementById('bulkInput').value = '';
+  document.getElementById('bulkPreviewCount').textContent = '';
+}
+
+// ═══════════════════════════════════
+//  FILE IMPORT
+// ═══════════════════════════════════
+let pendingFileNames = [];
+
+function handleFile(input) {
+  const file = input.files[0];
+  if (!file) return;
+  processFile(file);
+}
+
+function dragOver(e) {
+  e.preventDefault();
+  document.getElementById('dropzone').classList.add('drag-over');
+}
+function dragLeave(e) {
+  document.getElementById('dropzone').classList.remove('drag-over');
+}
+function dropFile(e) {
+  e.preventDefault();
+  document.getElementById('dropzone').classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file) processFile(file);
+}
+
+function processFile(file) {
+  if (!file.name.match(/\.(txt|csv)$/i)) {
+    showAlert('Hanya file .txt atau .csv yang didukung.');
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const text = e.target.result;
+    const names = parseNames(text);
+    pendingFileNames = names;
+
+    const dupes = names.filter(n => S.members.some(m => m.name.toLowerCase() === n.toLowerCase()));
+    const newCount = names.length - dupes.length;
+
+    const preview = document.getElementById('filePreview');
+    const btn = document.getElementById('importFileBtn');
+
+    preview.classList.remove('hidden');
+    preview.innerHTML = `
+      <div style="margin-bottom:4px;"><strong style="color:var(--text)">${esc(file.name)}</strong></div>
+      <div>${names.length} nama ditemukan · <span style="color:var(--accent)">${newCount} baru</span> · ${dupes.length} duplikat</div>
+      ${names.length > 0 ? `<div style="margin-top:6px; color:var(--text-3); font-size:11px;">Contoh: ${names.slice(0,3).map(esc).join(', ')}${names.length > 3 ? '…' : ''}</div>` : ''}
+    `;
+    btn.disabled = newCount === 0;
+    if (newCount === 0) showAlert('Semua nama dari file sudah ada dalam daftar.');
+  };
+  reader.readAsText(file, 'UTF-8');
+}
+
+function importFromFile() {
+  if (!pendingFileNames.length) return;
+  let added = 0, skipped = 0;
+  pendingFileNames.forEach(name => {
+    if (S.members.some(m => m.name.toLowerCase() === name.toLowerCase())) { skipped++; return; }
+    S.members.push({ id: S.nextId++, name, wins: [] });
+    added++;
+  });
+  clearFileInput();
+  hideAlert();
+  save(); render();
+  if (added > 0) showSuccess(`✓ ${added} peserta berhasil diimport${skipped > 0 ? `, ${skipped} dilewati` : ''}.`);
+}
+
+function clearFileInput() {
+  pendingFileNames = [];
+  document.getElementById('fileInput').value = '';
+  document.getElementById('filePreview').classList.add('hidden');
+  document.getElementById('importFileBtn').disabled = true;
+}
+
+// ═══════════════════════════════════
+//  PARSE NAMES (shared)
+// ═══════════════════════════════════
+function parseNames(text) {
+  return text
+    .split(/[\n,;]+/)          // split by newline, comma, or semicolon
+    .map(n => n.trim())
+    .filter(n => n.length > 0 && n.length <= 60);
+}
+
+// ═══════════════════════════════════
+//  ARISAN
+// ═══════════════════════════════════
+function getEligible() {
+  if (S.skipWinners) {
+    const e = S.members.filter(m => !m.wins || m.wins.length === 0);
+    return e.length > 0 ? e : [...S.members];
+  }
+  return [...S.members];
+}
+
+function startArisan() {
+  hideAlert();
+  if (S.members.length < 2) { showAlert('Minimal 2 peserta diperlukan.'); return; }
+  const eligible = getEligible();
+  if (!eligible.length) { showAlert('Tidak ada peserta yang tersisa untuk diundi.'); return; }
+
+  const count = Math.min(S.winnersCount, eligible.length);
+  enterShuffle();
+  runShuffle(eligible, count);
+}
+
+function enterShuffle() {
+  document.getElementById('startBtn').classList.add('hidden');
+  document.getElementById('statsRow').classList.add('hidden');
+  document.getElementById('progressWrap').classList.add('hidden');
+  document.getElementById('memberCard').classList.add('hidden');
+  document.getElementById('screen-winner').classList.add('hidden');
+  document.getElementById('screen-shuffle').classList.remove('hidden');
+}
+
+function showInputScreen() {
+  clearIntervals();
+  document.getElementById('startBtn').classList.remove('hidden');
+  document.getElementById('statsRow').classList.remove('hidden');
+  document.getElementById('progressWrap').classList.remove('hidden');
+  document.getElementById('memberCard').classList.remove('hidden');
+  document.getElementById('screen-shuffle').classList.add('hidden');
+  document.getElementById('screen-winner').classList.add('hidden');
+}
+
+function runShuffle(eligible, count) {
+  let timeLeft = S.timerDuration;
+  const timerEl = document.getElementById('timerNum');
+  const arc = document.getElementById('timerArc');
+  const nameEl = document.getElementById('shuffleName');
+  const CIRC = 263.89;
+
+  timerEl.textContent = timeLeft;
+  timerEl.style.color = 'var(--text)';
+  arc.style.stroke = 'url(#arcGrad)';
+  arc.style.strokeDashoffset = 0;
+
+  shuffleInt = setInterval(() => {
+    nameEl.textContent = eligible[Math.floor(Math.random() * eligible.length)].name;
+  }, 75);
+
+  timerInt = setInterval(() => {
+    timeLeft--;
+    timerEl.textContent = timeLeft;
+    arc.style.strokeDashoffset = CIRC * (1 - timeLeft / S.timerDuration);
+
+    if (timeLeft <= 5) {
+      timerEl.style.color = 'var(--danger)';
+      arc.style.stroke = 'var(--danger)';
+    }
+    if (timeLeft <= 0) {
+      clearIntervals();
+      revealWinners(eligible, count);
+    }
+  }, 1000);
+}
+
+function revealWinners(eligible, count) {
+  const shuffled = [...eligible].sort(() => Math.random() - 0.5);
+  const winners = shuffled.slice(0, count);
+  const roundNum = S.round;
+
+  winners.forEach(w => {
+    const m = S.members.find(m => m.id === w.id);
+    if (m) { if (!m.wins) m.wins = []; m.wins.push(roundNum); }
+    S.history.push({ round: roundNum, name: w.name, timestamp: Date.now() });
+  });
+
+  S.round++;
+  save(); render();
+
+  document.getElementById('screen-shuffle').classList.add('hidden');
+  document.getElementById('screen-winner').classList.remove('hidden');
+  document.getElementById('winnerRoundLabel').textContent = 'Putaran ' + roundNum;
+  document.getElementById('winnerName').textContent = winners.map(w => w.name).join(' & ');
+
+  fireConfetti();
+}
+
+function nextRound() {
+  document.getElementById('screen-winner').classList.add('hidden');
+  startArisan();
+}
+
+function clearIntervals() {
+  clearInterval(timerInt); clearInterval(shuffleInt);
+}
+
+// ═══════════════════════════════════
+//  HISTORY / SETTINGS
+// ═══════════════════════════════════
+function clearHistory() {
+  if (!S.history.length) return;
+  if (!confirm('Hapus seluruh riwayat undian?')) return;
+  S.history = [];
+  save(); renderHistory();
+}
+
+function changeTimer(d) {
+  S.timerDuration = Math.max(5, Math.min(120, S.timerDuration + d));
+  document.getElementById('timerSetting').textContent = S.timerDuration;
+  save();
+}
+
+function changeWinners(d) {
+  const max = Math.max(1, S.members.length);
+  S.winnersCount = Math.max(1, Math.min(max, S.winnersCount + d));
+  document.getElementById('winnersSetting').textContent = S.winnersCount;
+  save();
+}
+
+function toggleSkip(el) {
+  S.skipWinners = !S.skipWinners;
+  renderToggle(); render(); save();
+}
+
+function resetAll() {
+  if (!confirm('Reset semua data? Peserta, riwayat, dan pengaturan akan dihapus.')) return;
+  clearIntervals();
+  S = { members:[], history:[], round:1, timerDuration:30, winnersCount:1, skipWinners:true, nextId:1 };
+  showInputScreen();
+  save(); render();
+  renderToggle();
+}
+
+// ═══════════════════════════════════
+//  PAGES
+// ═══════════════════════════════════
+function switchPage(page) {
+  ['undian','history','settings'].forEach((p, i) => {
+    document.getElementById('page-' + p).classList.toggle('hidden', p !== page);
+    document.querySelectorAll('.nav-tab')[i].classList.toggle('active', p === page);
+  });
+  if (page === 'history') renderHistory();
+}
+
+// ═══════════════════════════════════
+//  ALERTS
+// ═══════════════════════════════════
+function showAlert(msg) {
+  const el = document.getElementById('alertBox');
+  document.getElementById('alertMsg').textContent = msg;
+  el.classList.remove('alert-success');
+  el.classList.add('alert-danger');
+  el.classList.add('show');
+}
+function showSuccess(msg) {
+  const el = document.getElementById('alertBox');
+  document.getElementById('alertMsg').textContent = msg;
+  el.classList.remove('alert-danger');
+  el.classList.add('alert-success');
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 3500);
+}
+function hideAlert() { document.getElementById('alertBox').classList.remove('show'); }
+
+// ═══════════════════════════════════
+//  CONFETTI
+// ═══════════════════════════════════
+function fireConfetti() {
+  const end = Date.now() + 3500;
+  (function frame() {
+    confetti({ particleCount:5, angle:60, spread:60, origin:{x:0}, colors:['#7c6af7','#b06ef3','#fbbf24','#a89ef9'] });
+    confetti({ particleCount:5, angle:120, spread:60, origin:{x:1}, colors:['#7c6af7','#b06ef3','#fbbf24','#a89ef9'] });
+    if (Date.now() < end) requestAnimationFrame(frame);
+  })();
+}
+
+// ═══════════════════════════════════
+//  UTIL
+// ═══════════════════════════════════
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ═══════════════════════════════════
+//  INIT
+// ═══════════════════════════════════
+load();
+render();
+// Wire bulk input live counter
+document.getElementById('bulkInput').addEventListener('input', updateBulkCount);
+</script>
 </body>
 </html>
