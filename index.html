@@ -437,7 +437,44 @@
   }
   .pricing-feature.disabled { color: var(--text-3); }
 
-  /* FOOTER */
+  /* HOW TO STEPS */
+  .how-step { display:flex; gap:14px; align-items:flex-start; }
+  .how-num {
+    width:28px; height:28px; border-radius:8px; flex-shrink:0;
+    background:linear-gradient(135deg, var(--accent), var(--accent2));
+    color:#fff; font-size:13px; font-weight:800;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .how-text { flex:1; padding-top:4px; }
+  .how-title { font-size:13px; font-weight:700; color:var(--text); margin-bottom:3px; }
+  .how-desc { font-size:12px; color:var(--text-3); line-height:1.6; }
+
+  /* PAYMENT BADGES */
+  .payment-badge {
+    display:flex; align-items:center; gap:8px;
+    background:var(--surface2); border:1px solid var(--border);
+    border-radius:10px; padding:10px 12px;
+    font-size:12px; font-weight:600; color:var(--text-2);
+  }
+
+  /* FAQ */
+  .faq-item {
+    display:grid; grid-template-columns:1fr auto;
+    grid-template-rows:auto auto;
+    gap:0; padding:14px 0;
+    border-bottom:1px solid var(--border);
+    cursor:pointer;
+  }
+  .faq-q { font-size:13px; font-weight:600; color:var(--text); grid-column:1; grid-row:1; padding-right:12px; }
+  .faq-icon { grid-column:2; grid-row:1; color:var(--text-3); transition:transform 0.2s; align-self:center; }
+  .faq-a {
+    grid-column:1/-1; grid-row:2;
+    font-size:12px; color:var(--text-3); line-height:1.7;
+    max-height:0; overflow:hidden; transition:max-height 0.3s ease, padding 0.3s ease;
+    padding-top:0;
+  }
+  .faq-item.open .faq-a { max-height:120px; padding-top:8px; }
+  .faq-item.open .faq-icon { transform:rotate(180deg); }
   .footer-wrap { margin-top: 24px; padding-bottom: 8px; }
   .footer-links {
     display: flex; align-items: center; justify-content: center;
@@ -808,108 +845,175 @@
 
   <!-- ====== PAGE: PRICING ====== -->
   <div id="page-pricing" class="hidden">
-    <div style="text-align:center; margin-bottom:20px;">
+
+    <!-- Header -->
+    <div style="text-align:center; margin-bottom:22px;">
       <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:var(--text-3); margin-bottom:8px;">Pilih Plan</div>
-      <div style="font-family:'Inter',sans-serif; font-size:26px; font-weight:800; color:var(--text); margin-bottom:6px;">Sederhana & Transparan</div>
-      <div style="font-size:13px; color:var(--text-3); line-height:1.6;">Tidak ada biaya tersembunyi.<br>Batalkan kapan saja.</div>
+      <div style="font-size:26px; font-weight:800; color:var(--text); margin-bottom:6px; line-height:1.2;">Sederhana &amp; Transparan</div>
+      <div style="font-size:13px; color:var(--text-3); line-height:1.7;">Tidak ada biaya tersembunyi.<br>Bayar via transfer, aktif dalam hitungan jam.</div>
     </div>
 
-    <!-- Free Card -->
-    <div class="card mb-12" style="margin-bottom:10px;">
+    <!-- FREE CARD -->
+    <div class="card" style="margin-bottom:10px;">
       <div class="card-body" style="padding:22px;">
         <div style="display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:16px;">
           <div>
-            <div style="font-size:12px; font-weight:600; color:var(--text-3); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:4px;">Gratis</div>
-            <div style="font-family:'Inter',sans-serif; font-size:32px; font-weight:800; color:var(--text); line-height:1;">Rp 0</div>
+            <div style="font-size:11px; font-weight:700; color:var(--text-3); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:6px;">Gratis</div>
+            <div style="font-size:32px; font-weight:800; color:var(--text); line-height:1;">Rp 0</div>
             <div style="font-size:11px; color:var(--text-3); margin-top:4px;">Selamanya</div>
           </div>
-          <div style="background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:10px; padding:8px 12px; font-size:12px; font-weight:600; color:var(--text-2);">Aktif Sekarang</div>
+          <div style="background:rgba(74,222,128,0.08); border:1px solid rgba(74,222,128,0.2); border-radius:10px; padding:6px 12px; font-size:11px; font-weight:700; color:#4ade80; letter-spacing:0.04em;">AKTIF</div>
         </div>
         <div class="divider"></div>
-        <div style="display:flex; flex-direction:column; gap:10px;">
-          <div class="pricing-feature">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-            <span>1 kelompok arisan</span>
-          </div>
-          <div class="pricing-feature">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-            <span>Maksimal 15 peserta</span>
-          </div>
-          <div class="pricing-feature">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-            <span>Riwayat pengundian</span>
-          </div>
-          <div class="pricing-feature disabled">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            <span>Unlimited kelompok</span>
-          </div>
-          <div class="pricing-feature disabled">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            <span>Export bukti PDF</span>
-          </div>
-          <div class="pricing-feature disabled">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            <span>Link live pengundian</span>
-          </div>
+        <div style="display:flex; flex-direction:column; gap:9px;">
+          <div class="pricing-feature"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span>1 kelompok arisan</span></div>
+          <div class="pricing-feature"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span>Maksimal 15 peserta</span></div>
+          <div class="pricing-feature"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span>Riwayat pengundian</span></div>
+          <div class="pricing-feature disabled"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg><span>Unlimited kelompok &amp; peserta</span></div>
+          <div class="pricing-feature disabled"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg><span>Export bukti PDF</span></div>
+          <div class="pricing-feature disabled"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg><span>Link live pengundian</span></div>
+          <div class="pricing-feature disabled"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg><span>Prioritas dukungan</span></div>
         </div>
       </div>
     </div>
 
-    <!-- Pro Card -->
-    <div class="card mb-12" style="margin-bottom:10px; border-color:rgba(124,106,247,0.4); position:relative; overflow:visible;">
-      <div style="position:absolute; top:-11px; left:50%; transform:translateX(-50%); background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; font-size:11px; font-weight:700; padding:4px 14px; border-radius:20px; white-space:nowrap; letter-spacing:0.05em;">PALING POPULER</div>
+    <!-- PRO CARD -->
+    <div class="card" style="margin-bottom:10px; border-color:rgba(124,106,247,0.45); position:relative; overflow:visible;">
+      <div style="position:absolute; top:-11px; left:50%; transform:translateX(-50%); background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; font-size:10px; font-weight:800; padding:4px 16px; border-radius:20px; white-space:nowrap; letter-spacing:0.08em;">PALING POPULER</div>
       <div class="card-body" style="padding:22px;">
         <div style="display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:16px;">
           <div>
-            <div style="font-size:12px; font-weight:600; color:var(--accent); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:4px;">Pro</div>
-            <div style="display:flex; align-items:baseline; gap:6px;">
-              <div style="font-family:'Inter',sans-serif; font-size:32px; font-weight:800; color:var(--text); line-height:1;">Rp 19.000</div>
-            </div>
+            <div style="font-size:11px; font-weight:700; color:var(--accent); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:6px;">Pro</div>
+            <div style="font-size:32px; font-weight:800; color:var(--text); line-height:1;">Rp 19.000</div>
             <div style="font-size:11px; color:var(--text-3); margin-top:4px;">per bulan · per kelompok</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:10px; color:var(--text-3); text-decoration:line-through; margin-bottom:2px;">Rp 29.000</div>
+            <div style="background:rgba(251,191,36,0.12); border:1px solid rgba(251,191,36,0.25); border-radius:6px; padding:3px 8px; font-size:10px; font-weight:700; color:var(--gold);">HEMAT 35%</div>
           </div>
         </div>
         <div class="divider"></div>
-        <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:18px;">
-          <div class="pricing-feature">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-            <span>Unlimited kelompok arisan</span>
-          </div>
-          <div class="pricing-feature">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-            <span>Unlimited peserta</span>
-          </div>
-          <div class="pricing-feature">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-            <span>Export bukti PDF otomatis</span>
-          </div>
-          <div class="pricing-feature">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-            <span>Link live pengundian</span>
-          </div>
-          <div class="pricing-feature">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-            <span>Riwayat lengkap semua putaran</span>
-          </div>
-          <div class="pricing-feature">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-            <span>Prioritas dukungan teknis</span>
-          </div>
+        <div style="display:flex; flex-direction:column; gap:9px; margin-bottom:20px;">
+          <div class="pricing-feature"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span>Semua fitur Gratis</span></div>
+          <div class="pricing-feature"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span>Unlimited kelompok arisan</span></div>
+          <div class="pricing-feature"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span>Unlimited peserta</span></div>
+          <div class="pricing-feature"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span>Export bukti PDF otomatis</span></div>
+          <div class="pricing-feature"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span>Link live pengundian</span></div>
+          <div class="pricing-feature"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span>Prioritas dukungan teknis</span></div>
         </div>
-        <button class="btn btn-primary btn-full" style="height:46px; font-size:14px; border-radius:12px;">
-          Mulai Gratis 14 Hari
+
+        <!-- CTA Button -->
+        <button class="btn btn-primary btn-full" onclick="openWASubscribe()" style="height:48px; font-size:14px; font-weight:700; border-radius:12px; gap:10px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+            <path d="M12 0C5.373 0 0 5.373 0 12c0 2.115.549 4.101 1.508 5.831L.057 23.428a.5.5 0 0 0 .601.601l5.598-1.451A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.893 0-3.658-.525-5.166-1.434l-.361-.214-3.724.966.987-3.617-.236-.374A9.96 9.96 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/>
+          </svg>
+          Berlangganan via WhatsApp
         </button>
-        <div style="text-align:center; font-size:11px; color:var(--text-3); margin-top:10px;">Tidak perlu kartu kredit</div>
+        <div style="text-align:center; font-size:11px; color:var(--text-3); margin-top:10px;">Aktif dalam hitungan jam setelah konfirmasi</div>
       </div>
     </div>
 
-    <div class="card" style="margin-bottom:0;">
-      <div class="card-body" style="padding:16px 22px; text-align:center;">
-        <div style="font-size:12px; color:var(--text-3); line-height:1.8;">
-          Ada pertanyaan soal pricing?<br>
-          <span style="color:var(--accent); cursor:pointer; font-weight:500;" onclick="openPopup('contact')">Hubungi kami</span> — kami siap membantu.
+    <!-- HOW TO SUBSCRIBE -->
+    <div class="card" style="margin-bottom:10px;">
+      <div class="card-header">
+        <span class="card-title">Cara Berlangganan</span>
+      </div>
+      <div class="card-body" style="padding:18px 22px;">
+        <div style="display:flex; flex-direction:column; gap:14px;">
+          <div class="how-step">
+            <div class="how-num">1</div>
+            <div class="how-text">
+              <div class="how-title">Hubungi via WhatsApp</div>
+              <div class="how-desc">Klik tombol di atas. Kami akan balas dengan info rekening dan e-wallet yang tersedia.</div>
+            </div>
+          </div>
+          <div class="how-step">
+            <div class="how-num">2</div>
+            <div class="how-text">
+              <div class="how-title">Lakukan Transfer</div>
+              <div class="how-desc">Transfer Rp 19.000 via Bank Transfer, GoPay, OVO, DANA, atau ShopeePay sesuai instruksi.</div>
+            </div>
+          </div>
+          <div class="how-step">
+            <div class="how-num">3</div>
+            <div class="how-text">
+              <div class="how-title">Kirim Bukti Transfer</div>
+              <div class="how-desc">Foto atau screenshot bukti transfer dikirim ke WhatsApp kami untuk verifikasi.</div>
+            </div>
+          </div>
+          <div class="how-step">
+            <div class="how-num">4</div>
+            <div class="how-text">
+              <div class="how-title">Akun Pro Aktif</div>
+              <div class="how-desc">Setelah terverifikasi, akun Pro Anda langsung aktif dalam hitungan jam di hari kerja.</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
+
+    <!-- PAYMENT METHODS -->
+    <div class="card" style="margin-bottom:10px;">
+      <div class="card-header">
+        <span class="card-title">Metode Pembayaran</span>
+      </div>
+      <div class="card-body" style="padding:16px 22px;">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+          <div class="payment-badge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+            Transfer Bank
+          </div>
+          <div class="payment-badge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z"/><path d="M12 6v6l4 2"/></svg>
+            GoPay
+          </div>
+          <div class="payment-badge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+            OVO
+          </div>
+          <div class="payment-badge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            DANA
+          </div>
+          <div class="payment-badge" style="grid-column:span 2;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+            ShopeePay
+          </div>
+        </div>
+        <div style="margin-top:12px; font-size:11px; color:var(--text-3); text-align:center; line-height:1.6;">
+          Detail nomor rekening &amp; e-wallet dikirim via WhatsApp<br>untuk menjaga privasi pemilik akun.
+        </div>
+      </div>
+    </div>
+
+    <!-- FAQ -->
+    <div class="card" style="margin-bottom:0;">
+      <div class="card-header"><span class="card-title">Pertanyaan Umum</span></div>
+      <div class="card-body" style="padding:16px 22px; display:flex; flex-direction:column; gap:0;">
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-q">Apakah ada kontrak jangka panjang?</div>
+          <svg class="faq-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          <div class="faq-a">Tidak ada. Anda berlangganan per bulan dan bisa berhenti kapan saja tanpa biaya tambahan.</div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-q">Berapa lama aktivasi setelah transfer?</div>
+          <svg class="faq-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          <div class="faq-a">Maksimal 1×24 jam di hari kerja. Rata-rata kami proses dalam 1–3 jam setelah bukti transfer diterima.</div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-q">Apakah data saya aman?</div>
+          <svg class="faq-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          <div class="faq-a">Saat ini semua data tersimpan lokal di perangkat Anda. Kami tidak menyimpan nama peserta atau riwayat undian di server kami.</div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)" style="border-bottom:none;">
+          <div class="faq-q">Bagaimana cara perpanjang langganan?</div>
+          <svg class="faq-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          <div class="faq-a">Cukup transfer kembali dan kirim buktinya via WhatsApp. Masa aktif akan diperpanjang otomatis dari tanggal berakhir sebelumnya.</div>
+        </div>
+      </div>
+    </div>
+
   </div>
 
   <!-- FOOTER -->
@@ -963,7 +1067,7 @@
     <p>Kami senang mendengar dari Anda. Untuk pertanyaan, saran, laporan bug, atau kerja sama, silakan hubungi kami melalui email di bawah ini.</p>
     <div class="contact-card">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-      <a href="mailto:termireum@gmail.com" style="color:var(--accent); text-decoration:none; font-weight:600; font-size:14px;">termireum@gmail.com</a>
+      <a href="/cdn-cgi/l/email-protection#2a5e4f584743584f5f476a4d474b434604494547" style="color:var(--accent); text-decoration:none; font-weight:600; font-size:14px;"><span class="__cf_email__" data-cfemail="82f6e7f0efebf0e7f7efc2e5efe3ebeeace1edef">[email&#160;protected]</span></a>
     </div>
     <p style="font-size:12px; color:var(--text-3);">Kami berusaha membalas setiap pesan dalam 1×24 jam di hari kerja.</p>
   </div>
@@ -1018,7 +1122,9 @@
   </div>
 </div>
 
+
 <script>
+
 // ═══════════════════════════════════
 //  STATE
 // ═══════════════════════════════════
@@ -1479,8 +1585,23 @@ function closePopup() {
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closePopup(); });
 
 // ═══════════════════════════════════
-//  ALERTS
+//  WHATSAPP SUBSCRIBE
 // ═══════════════════════════════════
+function openWASubscribe() {
+  const msg = encodeURIComponent(
+    'Halo, saya tertarik berlangganan ArisanPro Plan Pro (Rp 19.000/bulan). Mohon info rekening/e-wallet untuk transfer. Terima kasih!'
+  );
+  window.open('https://wa.me/6285801256686?text=' + msg, '_blank');
+}
+
+// ═══════════════════════════════════
+//  FAQ TOGGLE
+// ═══════════════════════════════════
+function toggleFaq(el) {
+  const isOpen = el.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(f => f.classList.remove('open'));
+  if (!isOpen) el.classList.add('open');
+}
 function showAlert(msg) {
   const el = document.getElementById('alertBox');
   document.getElementById('alertMsg').textContent = msg;
@@ -1519,11 +1640,7 @@ function esc(s) {
 
 // ═══════════════════════════════════
 //  INIT
-// ═══════════════════════════════════
-load();
-render();
-// Wire bulk input live counter
-document.getElementById('bulkInput').addEventListener('input', updateBulkCount);
+// ══════
 </script>
 </body>
 </html>
