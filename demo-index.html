@@ -1,0 +1,1792 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arisan Digital Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<style>
+  :root {
+    --bg: #0c0c10;
+    --surface: #131318;
+    --surface2: #1a1a22;
+    --border: rgba(255,255,255,0.07);
+    --border-hover: rgba(255,255,255,0.14);
+    --accent: #7c6af7;
+    --accent2: #b06ef3;
+    --accent-glow: rgba(124,106,247,0.25);
+    --text: #f0eff8;
+    --text-2: #8b8a9e;
+    --text-3: #4e4d60;
+    --danger: #f87171;
+    --success: #4ade80;
+    --gold: #fbbf24;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 16px 48px;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 15% 20%, rgba(124,106,247,0.1) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 60% at 85% 70%, rgba(176,110,243,0.07) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 28px 28px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .app-wrapper {
+    width: 100%;
+    max-width: 480px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* NAV */
+  .top-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .logo {
+    font-family: 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: 18px;
+    letter-spacing: -0.5px;
+    color: var(--text);
+  }
+  .logo span {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .nav-tabs {
+    display: flex;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 3px;
+    gap: 2px;
+  }
+  .nav-tab {
+    background: none;
+    border: none;
+    color: var(--text-2);
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 7px;
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+  .nav-tab.active {
+    background: var(--surface2);
+    color: var(--text);
+    border: 1px solid var(--border-hover);
+  }
+  .nav-tab:hover:not(.active) { color: var(--text); }
+
+  /* CARD */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    overflow: hidden;
+  }
+  .card-header {
+    padding: 18px 22px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .card-title {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--text-2);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .badge-pill {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+    background: rgba(124,106,247,0.12);
+    border: 1px solid rgba(124,106,247,0.25);
+    color: #a89ef9;
+  }
+  .card-body { padding: 18px 22px; }
+
+  /* BUTTONS */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.18s;
+    padding: 0 18px;
+    height: 42px;
+    white-space: nowrap;
+  }
+  .btn-full { width: 100%; }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+    color: #fff;
+    box-shadow: 0 4px 20px var(--accent-glow);
+  }
+  .btn-primary:hover { filter: brightness(1.08); transform: translateY(-1px); box-shadow: 0 8px 28px var(--accent-glow); }
+  .btn-primary:active { transform: translateY(0); filter: brightness(0.97); }
+  .btn-ghost {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text-2);
+  }
+  .btn-ghost:hover { border-color: var(--border-hover); color: var(--text); }
+  .btn-danger {
+    background: rgba(248,113,113,0.1);
+    border: 1px solid rgba(248,113,113,0.2);
+    color: var(--danger);
+  }
+  .btn-danger:hover { background: rgba(248,113,113,0.18); }
+  .btn-sm { height: 34px; font-size: 12px; padding: 0 12px; border-radius: 8px; gap: 5px; }
+
+  /* INPUT */
+  textarea, input[type="text"] {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    padding: 11px 14px;
+    resize: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+  }
+  textarea:focus, input[type="text"]:focus {
+    border-color: rgba(124,106,247,0.5);
+    box-shadow: 0 0 0 3px rgba(124,106,247,0.1);
+  }
+  textarea::placeholder, input::placeholder { color: var(--text-3); }
+  textarea::-webkit-scrollbar { width: 3px; }
+  textarea::-webkit-scrollbar-thumb { background: rgba(124,106,247,0.3); border-radius: 2px; }
+
+  /* MEMBER */
+  .member-add-row { display: flex; gap: 8px; margin-bottom: 12px; }
+  .member-list {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    max-height: 260px;
+    overflow-y: auto;
+    padding-right: 2px;
+  }
+  .member-list::-webkit-scrollbar { width: 3px; }
+  .member-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+  .member-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 9px 12px;
+    transition: all 0.15s;
+    position: relative;
+    overflow: hidden;
+  }
+  .member-item.won {
+    border-color: rgba(251,191,36,0.2);
+    background: rgba(251,191,36,0.04);
+  }
+  .member-item.won::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--gold);
+  }
+  .member-avatar {
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700;
+    flex-shrink: 0;
+    font-family: 'Inter', sans-serif;
+  }
+  .member-name { flex: 1; font-size: 13px; font-weight: 500; color: var(--text); }
+  .member-item.won .member-name { color: #d4a820; }
+  .member-badge {
+    font-size: 10px; font-weight: 600;
+    padding: 2px 8px; border-radius: 20px;
+    background: rgba(251,191,36,0.12);
+    border: 1px solid rgba(251,191,36,0.25);
+    color: var(--gold);
+    white-space: nowrap;
+  }
+  .del-btn {
+    background: none; border: none; cursor: pointer;
+    color: var(--text-3); padding: 4px; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s; flex-shrink: 0;
+  }
+  .del-btn:hover { color: var(--danger); background: rgba(248,113,113,0.1); }
+
+  /* STATS */
+  .stats-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .stat-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px;
+    text-align: center;
+  }
+  .stat-value { font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 800; color: var(--text); line-height: 1; margin-bottom: 4px; }
+  .stat-label { font-size: 10px; color: var(--text-3); font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; }
+
+  /* PROGRESS */
+  .progress-wrap { margin-bottom: 12px; }
+  .progress-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-2); font-weight: 500; margin-bottom: 7px; }
+  .progress-track { height: 5px; background: var(--surface2); border-radius: 6px; overflow: hidden; border: 1px solid var(--border); }
+  .progress-fill {
+    height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 6px; transition: width 0.6s cubic-bezier(0.34,1.56,0.64,1);
+  }
+
+  /* DIVIDER */
+  .divider { height: 1px; background: var(--border); margin: 14px 0; }
+
+  /* ALERT */
+  .alert { display: none; align-items: center; gap: 8px; padding: 9px 12px; border-radius: 10px; font-size: 12px; font-weight: 500; margin-bottom: 12px; }
+  .alert.show { display: flex; }
+  .alert-danger { background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.25); color: var(--danger); }
+  .alert-success { background: rgba(74,222,128,0.08); border: 1px solid rgba(74,222,128,0.2); color: var(--success); }
+
+  /* SHUFFLE SCREEN */
+  #screen-shuffle { padding: 28px 22px; text-align: center; }
+  .timer-wrap {
+    position: relative; display: inline-flex;
+    align-items: center; justify-content: center;
+    width: 96px; height: 96px; margin-bottom: 20px;
+  }
+  .timer-svg { position: absolute; inset: 0; }
+  .timer-number {
+    font-family: 'Inter', sans-serif; font-size: 30px; font-weight: 800;
+    color: var(--text); position: relative; z-index: 1; transition: color 0.3s;
+  }
+  .shuffle-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-3); margin-bottom: 20px; }
+  .name-reel {
+    height: 76px; display: flex; align-items: center; justify-content: center;
+    background: var(--surface2); border: 1px solid var(--border); border-radius: 14px;
+    margin-bottom: 20px; overflow: hidden; position: relative;
+  }
+  .name-reel::before, .name-reel::after {
+    content: ''; position: absolute; left: 0; right: 0; height: 20px; z-index: 2; pointer-events: none;
+  }
+  .name-reel::before { top: 0; background: linear-gradient(to bottom, var(--surface2), transparent); }
+  .name-reel::after { bottom: 0; background: linear-gradient(to top, var(--surface2), transparent); }
+  #shuffleName {
+    font-family: 'Inter', sans-serif; font-size: 28px; font-weight: 800;
+    background: linear-gradient(135deg, #a89ef9, #d89bf5);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    padding: 0 16px; text-align: center; line-height: 1.2;
+  }
+  /* WINNER SCREEN */
+  #screen-winner { padding: 28px 22px; text-align: center; }
+  .crown-wrap { position: relative; display: inline-block; margin-bottom: 16px; }
+  .crown-icon { display: block; animation: crownFloat 3s ease-in-out infinite; }
+  @keyframes crownFloat { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-8px);} }
+  .crown-ring {
+    position: absolute; inset: -8px; border-radius: 50%;
+    border: 2px solid rgba(251,191,36,0.3);
+    animation: ringExpand 2s ease-out infinite;
+  }
+  .crown-ring-2 { animation-delay: 0.8s; }
+  @keyframes ringExpand { 0%{transform:scale(0.6);opacity:1;} 100%{transform:scale(1.8);opacity:0;} }
+  .winner-round-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-3); margin-bottom: 8px; }
+  .winner-name {
+    font-family: 'Inter', sans-serif; font-size: 36px; font-weight: 800;
+    background: linear-gradient(135deg, #fbbf24, #f59e0b, #fde68a);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    line-height: 1.2; margin-bottom: 6px; word-break: break-word; padding: 0 8px;
+  }
+  .winner-sub { font-size: 13px; color: var(--text-3); margin-bottom: 22px; }
+  .winner-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+  /* HISTORY */
+  .history-list { display: flex; flex-direction: column; gap: 7px; max-height: 380px; overflow-y: auto; }
+  .history-list::-webkit-scrollbar { width: 3px; }
+  .history-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+  .history-item {
+    display: flex; align-items: center; gap: 12px;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 12px; padding: 11px 14px; transition: border-color 0.15s;
+  }
+  .history-item:hover { border-color: var(--border-hover); }
+  .history-round { font-family: 'Inter', sans-serif; font-size: 16px; font-weight: 800; color: var(--text-3); width: 26px; flex-shrink: 0; text-align: center; }
+  .history-info { flex: 1; min-width: 0; }
+  .history-name { font-size: 14px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; }
+  .history-date { font-size: 11px; color: var(--text-3); }
+  .history-trophy { font-size: 18px; }
+
+  /* EMPTY STATE */
+  .empty-state { text-align: center; padding: 28px 0; }
+  .empty-icon { font-size: 32px; margin-bottom: 8px; opacity: 0.3; }
+  .empty-text { font-size: 13px; color: var(--text-3); line-height: 1.5; }
+
+  /* SETTINGS */
+  .setting-row { display: flex; align-items: center; justify-content: space-between; padding: 13px 0; border-bottom: 1px solid var(--border); }
+  .setting-row:last-child { border-bottom: none; }
+  .setting-label { font-size: 13px; font-weight: 500; color: var(--text-2); }
+  .setting-desc { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+  .num-input-wrap { display: flex; align-items: center; gap: 4px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 2px; }
+  .num-btn {
+    background: none; border: none; color: var(--text-2); font-size: 16px; font-weight: 700;
+    cursor: pointer; width: 28px; height: 28px; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center; transition: all 0.15s;
+  }
+  .num-btn:hover { background: var(--border); color: var(--text); }
+  .num-display { font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 700; color: var(--text); min-width: 26px; text-align: center; }
+
+  /* INNER TABS */
+  .inner-tabs { display:flex; gap:3px; background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:3px; margin-bottom:14px; }
+  .inner-tab { flex:1; background:none; border:none; color:var(--text-2); font-family:'Inter',sans-serif; font-size:12px; font-weight:500; padding:7px 6px; border-radius:7px; cursor:pointer; transition:all 0.18s; text-align:center; white-space:nowrap; }
+  .inner-tab.active { background:var(--surface); color:var(--text); border:1px solid var(--border-hover); }
+  .inner-tab:hover:not(.active) { color:var(--text); }
+  #dropzone:hover, #dropzone.drag-over { border-color: rgba(124,106,247,0.5); background: rgba(124,106,247,0.05); }
+
+
+  .toggle-track {
+    position: relative; display: inline-block;
+    width: 44px; height: 24px;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 12px; cursor: pointer; transition: all 0.2s; flex-shrink: 0;
+  }
+  .toggle-thumb {
+    position: absolute; left: 3px; top: 50%; transform: translateY(-50%);
+    width: 18px; height: 18px; background: #fff; border-radius: 50%;
+    transition: all 0.2s; opacity: 0.3;
+  }
+  .toggle-track.on { background: rgba(124,106,247,0.5); border-color: rgba(124,106,247,0.5); }
+  .toggle-track.on .toggle-thumb { left: 23px; opacity: 1; }
+
+  /* UTIL */
+  .hidden { display: none !important; }
+  .mb-12 { margin-bottom: 12px; }
+  .footer { margin-top: 20px; text-align: center; font-size: 12px; color: var(--text-3); }
+
+  /* AVATAR COLORS */
+  .av-0 { background: rgba(124,106,247,0.18); color: #a89ef9; }
+  .av-1 { background: rgba(251,191,36,0.14); color: #fbbf24; }
+  .av-2 { background: rgba(52,211,153,0.14); color: #34d399; }
+  .av-3 { background: rgba(248,113,113,0.14); color: #f87171; }
+  .av-4 { background: rgba(99,179,237,0.14); color: #63b3ed; }
+  .av-5 { background: rgba(245,158,11,0.14); color: #f59e0b; }
+
+  @media (max-width: 400px) {
+    .winner-name { font-size: 28px; }
+    #shuffleName { font-size: 22px; }
+    .stats-row { gap: 6px; }
+  }
+
+  /* PRICING */
+  .pricing-feature {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 13px; font-weight: 500; color: var(--text-2);
+  }
+  .pricing-feature.disabled { color: var(--text-3); }
+
+  /* HOW TO STEPS */
+  .how-step { display:flex; gap:14px; align-items:flex-start; }
+  .how-num {
+    width:28px; height:28px; border-radius:8px; flex-shrink:0;
+    background:linear-gradient(135deg, var(--accent), var(--accent2));
+    color:#fff; font-size:13px; font-weight:800;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .how-text { flex:1; padding-top:4px; }
+  .how-title { font-size:13px; font-weight:700; color:var(--text); margin-bottom:3px; }
+  .how-desc { font-size:12px; color:var(--text-3); line-height:1.6; }
+
+  /* PAYMENT BADGES */
+  .payment-badge {
+    display:flex; align-items:center; gap:8px;
+    background:var(--surface2); border:1px solid var(--border);
+    border-radius:10px; padding:10px 12px;
+    font-size:12px; font-weight:600; color:var(--text-2);
+  }
+
+  /* FAQ */
+  .faq-item {
+    display:grid; grid-template-columns:1fr auto;
+    grid-template-rows:auto auto;
+    gap:0; padding:14px 0;
+    border-bottom:1px solid var(--border);
+    cursor:pointer;
+  }
+  .faq-q { font-size:13px; font-weight:600; color:var(--text); grid-column:1; grid-row:1; padding-right:12px; }
+  .faq-icon { grid-column:2; grid-row:1; color:var(--text-3); transition:transform 0.2s; align-self:center; }
+  .faq-a {
+    grid-column:1/-1; grid-row:2;
+    font-size:12px; color:var(--text-3); line-height:1.7;
+    max-height:0; overflow:hidden; transition:max-height 0.3s ease, padding 0.3s ease;
+    padding-top:0;
+  }
+  .faq-item.open .faq-a { max-height:120px; padding-top:8px; }
+  .faq-item.open .faq-icon { transform:rotate(180deg); }
+  .footer-wrap { margin-top: 24px; padding-bottom: 8px; }
+  .footer-links {
+    display: flex; align-items: center; justify-content: center;
+    flex-wrap: wrap; gap: 6px;
+  }
+  .footer-link {
+    font-size: 12px; color: var(--text-3); cursor: pointer;
+    font-weight: 500; transition: color 0.15s; padding: 2px 0;
+  }
+  .footer-link:hover { color: var(--accent); }
+  .footer-dot { font-size: 12px; color: var(--text-3); opacity: 0.4; }
+
+  /* POPUP OVERLAY */
+  .popup-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);
+    z-index: 100;
+  }
+  .popup-overlay.open { display: block; }
+
+  /* POPUP */
+  .popup {
+    display: none; position: fixed;
+    bottom: 0; left: 50%; transform: translateX(-50%);
+    width: 100%; max-width: 480px;
+    background: #1a1a22;
+    border: 1px solid var(--border-hover);
+    border-bottom: none;
+    border-radius: 24px 24px 0 0;
+    z-index: 101;
+    max-height: 80vh;
+    overflow: hidden;
+    flex-direction: column;
+    animation: slideUp 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .popup.open { display: flex; }
+  @keyframes slideUp { from { transform: translateX(-50%) translateY(100%); } to { transform: translateX(-50%) translateY(0); } }
+
+  .popup-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 22px 16px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .popup-title { font-size: 16px; font-weight: 700; color: var(--text); }
+  .popup-close {
+    background: var(--surface2); border: 1px solid var(--border);
+    color: var(--text-2); border-radius: 8px; cursor: pointer;
+    width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s; flex-shrink: 0;
+  }
+  .popup-close:hover { color: var(--text); border-color: var(--border-hover); }
+
+  .popup-body {
+    padding: 20px 22px 32px;
+    overflow-y: auto; flex: 1;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .popup-body p {
+    font-size: 13px; color: var(--text-2); line-height: 1.75;
+  }
+  .popup-badge {
+    display: inline-block; font-size: 11px; font-weight: 600;
+    padding: 4px 12px; border-radius: 20px;
+    background: rgba(124,106,247,0.1); border: 1px solid rgba(124,106,247,0.2);
+    color: #a89ef9; margin-top: 4px;
+  }
+  .contact-card {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 14px 16px;
+  }
+  .privacy-section { display: flex; flex-direction: column; gap: 6px; }
+  .privacy-heading { font-size: 13px; font-weight: 700; color: var(--text); }
+
+  /* DEMO POPUP */
+  .demo-overlay {
+    display:none; position:fixed; inset:0;
+    background:rgba(0,0,0,0.75); backdrop-filter:blur(6px);
+    z-index:200; align-items:flex-end; justify-content:center;
+  }
+  .demo-overlay.open { display:flex; }
+  .demo-modal {
+    width:100%; max-width:480px;
+    background:#1a1a22;
+    border:1px solid rgba(124,106,247,0.4);
+    border-bottom:none; border-radius:24px 24px 0 0;
+    padding:28px 24px 36px;
+    animation:slideUp 0.35s cubic-bezier(0.34,1.56,0.64,1);
+    position:relative; overflow:hidden;
+  }
+  .demo-modal::before {
+    content:''; position:absolute; inset:0;
+    background:radial-gradient(ellipse 80% 60% at 50% 120%, rgba(124,106,247,0.15) 0%, transparent 70%);
+    pointer-events:none;
+  }
+  .demo-badge {
+    display:inline-flex; align-items:center; gap:6px;
+    background:rgba(251,191,36,0.12); border:1px solid rgba(251,191,36,0.25);
+    border-radius:20px; padding:4px 12px;
+    font-size:11px; font-weight:700; color:#fbbf24;
+    text-transform:uppercase; letter-spacing:0.08em; margin-bottom:14px;
+  }
+  .demo-title { font-size:22px; font-weight:800; color:#f0eff8; line-height:1.2; margin-bottom:8px; }
+  .demo-title span { background:linear-gradient(135deg,#7c6af7,#b06ef3); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .demo-desc { font-size:13px; color:#8b8a9e; line-height:1.7; margin-bottom:20px; }
+  .demo-features { display:flex; flex-direction:column; gap:8px; margin-bottom:22px; }
+  .demo-feat { display:flex; align-items:center; gap:10px; font-size:13px; color:#8b8a9e; font-weight:500; }
+  .demo-actions { display:flex; flex-direction:column; gap:8px; }
+  .demo-cta {
+    width:100%; height:48px; border-radius:12px; border:none; cursor:pointer;
+    font-family:'Inter',sans-serif; font-size:14px; font-weight:700;
+    background:linear-gradient(135deg,#7c6af7,#b06ef3); color:#fff;
+    box-shadow:0 4px 20px rgba(124,106,247,0.3); transition:all 0.18s;
+    display:flex; align-items:center; justify-content:center; gap:8px;
+  }
+  .demo-cta:hover { filter:brightness(1.08); transform:translateY(-1px); }
+  .demo-skip {
+    width:100%; height:40px; border-radius:10px; cursor:pointer;
+    font-family:'Inter',sans-serif; font-size:13px; font-weight:500;
+    background:none; border:1px solid rgba(255,255,255,0.08); color:#4e4d60; transition:all 0.18s;
+  }
+  .demo-skip:hover { color:#8b8a9e; border-color:rgba(255,255,255,0.14); }
+  .demo-banner {
+    position:fixed; bottom:16px; left:50%; transform:translateX(-50%);
+    width:calc(100% - 32px); max-width:448px;
+    background:#1a1a22; border:1px solid rgba(124,106,247,0.35);
+    border-radius:16px; padding:12px 16px;
+    display:flex; align-items:center; gap:12px;
+    z-index:150; box-shadow:0 8px 32px rgba(0,0,0,0.4);
+    animation:slideUp 0.3s ease; cursor:pointer;
+  }
+  .demo-banner:hover { border-color:rgba(124,106,247,0.6); }
+  .demo-banner-text { flex:1; font-size:12px; color:#8b8a9e; line-height:1.5; }
+  .demo-banner-text strong { color:#f0eff8; display:block; margin-bottom:1px; }
+  .demo-banner-btn {
+    background:linear-gradient(135deg,#7c6af7,#b06ef3); color:#fff;
+    border:none; border-radius:8px; cursor:pointer;
+    font-family:'Inter',sans-serif; font-size:12px; font-weight:700;
+    padding:7px 14px; white-space:nowrap; flex-shrink:0;
+  }
+
+</style>
+</head>
+<body>
+<div class="app-wrapper">
+
+  <!-- TOP NAV -->
+  <div class="top-nav">
+    <div class="logo">Arisan<span>Pro</span></div>
+    <div class="nav-tabs">
+      <button class="nav-tab active" onclick="switchPage('undian')">Undian</button>
+      <button class="nav-tab" onclick="switchPage('history')">Riwayat</button>
+      <button class="nav-tab" onclick="switchPage('pricing')">Pricing</button>
+      <button class="nav-tab" onclick="switchPage('settings')">Pengaturan</button>
+    </div>
+  </div>
+
+  <!-- ====== PAGE: UNDIAN ====== -->
+  <div id="page-undian">
+
+    <!-- Stats -->
+    <div class="stats-row" id="statsRow">
+      <div class="stat-box">
+        <div class="stat-value" id="stat-total">0</div>
+        <div class="stat-label">Peserta</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value" id="stat-menang" style="color:var(--gold)">0</div>
+        <div class="stat-label">Sudah Menang</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value" id="stat-sisa" style="color:var(--accent)">0</div>
+        <div class="stat-label">Sisa Giliran</div>
+      </div>
+    </div>
+
+    <!-- Progress -->
+    <div class="progress-wrap" id="progressWrap">
+      <div class="progress-label">
+        <span>Progress Arisan</span>
+        <span id="progressPct">0%</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progressFill" style="width:0%"></div>
+      </div>
+    </div>
+
+    <!-- Member Card -->
+    <div class="card mb-12" id="memberCard">
+      <div class="card-header">
+        <span class="card-title">Daftar Peserta</span>
+        <div style="display:flex;gap:6px;align-items:center;">
+          <span class="badge-pill" id="memberCountBadge">0 orang</span>
+          <button class="btn btn-danger btn-sm" onclick="clearAllMembers()" style="padding:0 10px;height:28px;font-size:11px;">Hapus Semua</button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="alert alert-danger" id="alertBox">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span id="alertMsg">Masukkan minimal 2 peserta.</span>
+        </div>
+
+        <!-- Inner Tabs -->
+        <div class="inner-tabs" id="inputModeTabs">
+          <button class="inner-tab active" onclick="switchInputMode('single')">Satu per Satu</button>
+          <button class="inner-tab" onclick="switchInputMode('bulk')">Import Massal</button>
+          <button class="inner-tab" onclick="switchInputMode('file')">Upload File</button>
+        </div>
+
+        <!-- MODE: Single -->
+        <div id="mode-single">
+          <div class="member-add-row">
+            <input type="text" id="newNameInput" placeholder="Nama peserta baru…" onkeydown="if(event.key==='Enter')addMember()" maxlength="40">
+            <button class="btn btn-primary btn-sm" onclick="addMember()" style="flex-shrink:0;padding:0 16px;">+ Tambah</button>
+          </div>
+        </div>
+
+        <!-- MODE: Bulk paste -->
+        <div id="mode-bulk" class="hidden">
+          <div style="margin-bottom:8px;">
+            <textarea id="bulkInput" rows="6" placeholder="Tulis atau paste banyak nama sekaligus.&#10;Satu nama per baris:&#10;&#10;Ibu Siska&#10;Pak RT&#10;Mbak Dini&#10;Bu Yanti&#10;..."></textarea>
+          </div>
+          <div style="display:flex; gap:8px; align-items:center;">
+            <span id="bulkPreviewCount" style="font-size:12px; color:var(--text-3); flex:1;"></span>
+            <button class="btn btn-ghost btn-sm" onclick="clearBulkInput()">Bersihkan</button>
+            <button class="btn btn-primary btn-sm" onclick="importBulk()" style="padding:0 16px;">⬇ Import Semua</button>
+          </div>
+        </div>
+
+        <!-- MODE: File upload -->
+        <div id="mode-file" class="hidden">
+          <div id="dropzone" onclick="document.getElementById('fileInput').click()" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="dropFile(event)"
+            style="border: 2px dashed var(--border); border-radius:12px; padding:28px 16px; text-align:center; cursor:pointer; transition:all 0.2s; margin-bottom:10px;">
+            <div style="margin-bottom:8px;">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(139,138,158,0.7)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+                <line x1="12" y1="11" x2="12" y2="17"/><polyline points="9 14 12 11 15 14"/>
+              </svg>
+            </div>
+            <div style="font-size:13px; font-weight:600; color:var(--text-2); margin-bottom:4px;">Klik atau seret file ke sini</div>
+            <div style="font-size:11px; color:var(--text-3);">Format: .txt atau .csv (satu nama per baris)</div>
+          </div>
+          <input type="file" id="fileInput" accept=".txt,.csv" style="display:none" onchange="handleFile(this)">
+          <div id="filePreview" class="hidden" style="background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:10px 14px; margin-bottom:8px; font-size:12px; color:var(--text-2);"></div>
+          <div style="display:flex; gap:8px; justify-content:flex-end;">
+            <button class="btn btn-ghost btn-sm" onclick="clearFileInput()">Batal</button>
+            <button class="btn btn-primary btn-sm" id="importFileBtn" onclick="importFromFile()" style="padding:0 16px;" disabled>⬇ Import</button>
+          </div>
+        </div>
+
+        <!-- Member list (always visible) -->
+        <div style="margin-top:12px;">
+          <div style="font-size:11px; font-weight:600; color:var(--text-3); text-transform:uppercase; letter-spacing:0.07em; margin-bottom:8px;" id="memberListLabel">Peserta Terdaftar</div>
+          <div class="member-list" id="memberList">
+            <div class="empty-state" id="emptyMembers">
+              <div class="empty-icon">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.25">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                </svg>
+              </div>
+              <div class="empty-text">Belum ada peserta.<br>Tambahkan nama di atas.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Start Button -->
+    <button class="btn btn-primary btn-full" id="startBtn" onclick="startArisan()" style="height:52px;font-size:15px;border-radius:14px;margin-bottom:12px;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="2" width="20" height="20" rx="5"/>
+        <circle cx="8.5" cy="8.5" r="1.2" fill="currentColor" stroke="none"/>
+        <circle cx="15.5" cy="8.5" r="1.2" fill="currentColor" stroke="none"/>
+        <circle cx="8.5" cy="15.5" r="1.2" fill="currentColor" stroke="none"/>
+        <circle cx="15.5" cy="15.5" r="1.2" fill="currentColor" stroke="none"/>
+        <circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"/>
+      </svg>
+      Mulai Pengundian
+    </button>
+
+    <!-- SHUFFLE SCREEN -->
+    <div class="card hidden" id="screen-shuffle">
+      <div class="timer-wrap">
+        <svg class="timer-svg" viewBox="0 0 96 96">
+          <circle cx="48" cy="48" r="42" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="6"/>
+          <circle id="timerArc" cx="48" cy="48" r="42" fill="none" stroke="url(#arcGrad)"
+            stroke-width="6" stroke-linecap="round"
+            stroke-dasharray="263.89" stroke-dashoffset="0"
+            transform="rotate(-90 48 48)"/>
+          <defs>
+            <linearGradient id="arcGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#7c6af7"/>
+              <stop offset="100%" stop-color="#b06ef3"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <div class="timer-number" id="timerNum">30</div>
+      </div>
+      <div class="shuffle-label">Mengocok nama peserta…</div>
+      <div class="name-reel"><div id="shuffleName">—</div></div>
+    </div>
+
+    <!-- WINNER SCREEN -->
+    <div class="card hidden" id="screen-winner">
+      <div class="crown-wrap">
+        <div class="crown-ring"></div>
+        <div class="crown-ring crown-ring-2"></div>
+        <span class="crown-icon">
+          <svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M8 38L14 20L22 30L28 12L34 30L42 20L48 38H8Z" stroke="url(#crownGrad)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" fill="rgba(251,191,36,0.12)"/>
+            <path d="M7 42H49" stroke="url(#crownGrad)" stroke-width="2.5" stroke-linecap="round"/>
+            <circle cx="28" cy="12" r="2.5" fill="#fbbf24"/>
+            <circle cx="14" cy="20" r="2" fill="#fbbf24" opacity="0.8"/>
+            <circle cx="42" cy="20" r="2" fill="#fbbf24" opacity="0.8"/>
+            <defs>
+              <linearGradient id="crownGrad" x1="8" y1="12" x2="48" y2="42" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#fbbf24"/>
+                <stop offset="100%" stop-color="#f59e0b"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </span>
+      </div>
+      <div class="winner-round-label" id="winnerRoundLabel">Putaran 1</div>
+      <div class="winner-name" id="winnerName">—</div>
+      <div class="winner-sub">Selamat! Semoga rejekinya berkah</div>
+      <div class="winner-actions">
+        <button class="btn btn-primary" onclick="nextRound()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+            <path d="M3 3v5h5"/>
+          </svg>
+          Kocok Lagi
+        </button>
+        <button class="btn btn-ghost" onclick="showInputScreen()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+            <path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4Z"/>
+          </svg>
+          Edit Daftar
+        </button>
+      </div>
+    </div>
+
+  </div><!-- /page-undian -->
+
+  <!-- ====== PAGE: HISTORY ====== -->
+  <div id="page-history" class="hidden">
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Riwayat Undian</span>
+        <button class="btn btn-danger btn-sm" onclick="clearHistory()" style="padding:0 10px;height:28px;font-size:11px;">Hapus Semua</button>
+      </div>
+      <div class="card-body">
+        <div class="history-list" id="historyList">
+          <div class="empty-state" id="emptyHistory">
+            <div class="empty-icon">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.25">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/>
+              </svg>
+            </div>
+            <div class="empty-text">Belum ada riwayat undian.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== PAGE: SETTINGS ====== -->
+  <div id="page-settings" class="hidden">
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Pengaturan</span>
+      </div>
+      <div class="card-body">
+
+        <div class="setting-row">
+          <div>
+            <div class="setting-label">Durasi Kocok (detik)</div>
+            <div class="setting-desc">Lama animasi pengundian</div>
+          </div>
+          <div class="num-input-wrap">
+            <button class="num-btn" onclick="changeTimer(-5)">−</button>
+            <div class="num-display" id="timerSetting">30</div>
+            <button class="num-btn" onclick="changeTimer(5)">+</button>
+          </div>
+        </div>
+
+        <div class="setting-row">
+          <div>
+            <div class="setting-label">Jumlah Pemenang</div>
+            <div class="setting-desc">Berapa nama yang dipilih tiap putaran</div>
+          </div>
+          <div class="num-input-wrap">
+            <button class="num-btn" onclick="changeWinners(-1)">−</button>
+            <div class="num-display" id="winnersSetting">1</div>
+            <button class="num-btn" onclick="changeWinners(1)">+</button>
+          </div>
+        </div>
+
+        <div class="setting-row">
+          <div>
+            <div class="setting-label">Skip yang Sudah Menang</div>
+            <div class="setting-desc">Peserta yang menang tidak masuk undian berikutnya</div>
+          </div>
+          <div class="toggle-track on" id="toggleTrack" onclick="toggleSkip(this)">
+            <div class="toggle-thumb" id="toggleThumb"></div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <button class="btn btn-danger btn-full" onclick="resetAll()" style="gap:8px;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+            <path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+          </svg>
+          Reset Semua Data
+        </button>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:10px;">
+      <div class="card-body" style="text-align:center; padding:16px 22px;">
+        <div style="font-size:12px; color:var(--text-3); line-height:1.8;">
+          <strong style="color:var(--text-2); font-family:'Inter',sans-serif;">Arisan Digital Pro</strong><br>
+          Pengundian acak yang adil &amp; transparan.<br>
+          Seluruh data disimpan di perangkat Anda.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== PAGE: PRICING ====== -->
+  <div id="page-pricing" class="hidden">
+
+    <!-- Header -->
+    <div style="text-align:center; margin-bottom:22px;">
+      <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:var(--text-3); margin-bottom:8px;">Pilih Plan</div>
+      <div style="font-size:26px; font-weight:800; color:var(--text); margin-bottom:6px; line-height:1.2;">Sederhana &amp; Transparan</div>
+      <div style="font-size:13px; color:var(--text-3); line-height:1.7;">Tidak ada biaya tersembunyi.<br>Bayar via transfer, aktif dalam hitungan jam.</div>
+    </div>
+
+    <!-- FREE CARD -->
+    <div class="card" style="margin-bottom:10px;">
+      <div class="card-body" style="padding:22px;">
+        <div style="display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:16px;">
+          <div>
+            <div style="font-size:11px; font-weight:700; color:var(--text-3); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:6px;">Gratis</div>
+            <div style="font-size:32px; font-weight:800; color:var(--text); line-height:1;">Rp 0</div>
+            <div style="font-size:11px; color:var(--text-3); margin-top:4px;">Selamanya</div>
+          </div>
+          <div style="background:rgba(74,222,128,0.08); border:1px solid rgba(74,222,128,0.2); border-radius:10px; padding:6px 12px; font-size:11px; font-weight:700; color:#4ade80; letter-spacing:0.04em;">AKTIF</div>
+        </div>
+        <div class="divider"></div>
+        <div style="display:flex; flex-direction:column; gap:9px;">
+          <div class="pricing-feature"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span>1 kelompok arisan</span></div>
+          <div class="pricing-feature"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span>Maksimal 15 peserta</span></div>
+          <div class="pricing-feature"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span>Riwayat pengundian</span></div>
+          <div class="pricing-feature disabled"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg><span>Unlimited kelompok &amp; peserta</span></div>
+          <div class="pricing-feature disabled"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg><span>Export bukti PDF</span></div>
+          <div class="pricing-feature disabled"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg><span>Link live pengundian</span></div>
+          <div class="pricing-feature disabled"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg><span>Prioritas dukungan</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRO CARD -->
+    <div class="card" style="margin-bottom:10px; border-color:rgba(124,106,247,0.45); position:relative; overflow:visible;">
+      <div style="position:absolute; top:-11px; left:50%; transform:translateX(-50%); background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; font-size:10px; font-weight:800; padding:4px 16px; border-radius:20px; white-space:nowrap; letter-spacing:0.08em;">PALING POPULER</div>
+      <div class="card-body" style="padding:22px;">
+        <div style="display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:16px;">
+          <div>
+            <div style="font-size:11px; font-weight:700; color:var(--accent); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:6px;">Pro</div>
+            <div style="font-size:32px; font-weight:800; color:var(--text); line-height:1;">Rp 19.000</div>
+            <div style="font-size:11px; color:var(--text-3); margin-top:4px;">per bulan · per kelompok</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:10px; color:var(--text-3); text-decoration:line-through; margin-bottom:2px;">Rp 29.000</div>
+            <div style="background:rgba(251,191,36,0.12); border:1px solid rgba(251,191,36,0.25); border-radius:6px; padding:3px 8px; font-size:10px; font-weight:700; color:var(--gold);">HEMAT 35%</div>
+          </div>
+        </div>
+        <div class="divider"></div>
+        <div style="display:flex; flex-direction:column; gap:9px; margin-bottom:20px;">
+          <div class="pricing-feature"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span>Semua fitur Gratis</span></div>
+          <div class="pricing-feature"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span>Unlimited kelompok arisan</span></div>
+          <div class="pricing-feature"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span>Unlimited peserta</span></div>
+          <div class="pricing-feature"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span>Export bukti PDF otomatis</span></div>
+          <div class="pricing-feature"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span>Link live pengundian</span></div>
+          <div class="pricing-feature"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span>Prioritas dukungan teknis</span></div>
+        </div>
+
+        <!-- CTA Button -->
+        <button class="btn btn-primary btn-full" onclick="openWASubscribe()" style="height:48px; font-size:14px; font-weight:700; border-radius:12px; gap:10px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+            <path d="M12 0C5.373 0 0 5.373 0 12c0 2.115.549 4.101 1.508 5.831L.057 23.428a.5.5 0 0 0 .601.601l5.598-1.451A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.893 0-3.658-.525-5.166-1.434l-.361-.214-3.724.966.987-3.617-.236-.374A9.96 9.96 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/>
+          </svg>
+          Berlangganan via WhatsApp
+        </button>
+        <div style="text-align:center; font-size:11px; color:var(--text-3); margin-top:10px;">Aktif dalam hitungan jam setelah konfirmasi</div>
+      </div>
+    </div>
+
+    <!-- HOW TO SUBSCRIBE -->
+    <div class="card" style="margin-bottom:10px;">
+      <div class="card-header">
+        <span class="card-title">Cara Berlangganan</span>
+      </div>
+      <div class="card-body" style="padding:18px 22px;">
+        <div style="display:flex; flex-direction:column; gap:14px;">
+          <div class="how-step">
+            <div class="how-num">1</div>
+            <div class="how-text">
+              <div class="how-title">Hubungi via WhatsApp</div>
+              <div class="how-desc">Klik tombol di atas. Kami akan balas dengan info rekening dan e-wallet yang tersedia.</div>
+            </div>
+          </div>
+          <div class="how-step">
+            <div class="how-num">2</div>
+            <div class="how-text">
+              <div class="how-title">Lakukan Transfer</div>
+              <div class="how-desc">Transfer Rp 19.000 via Bank Transfer, GoPay, OVO, DANA, atau ShopeePay sesuai instruksi.</div>
+            </div>
+          </div>
+          <div class="how-step">
+            <div class="how-num">3</div>
+            <div class="how-text">
+              <div class="how-title">Kirim Bukti Transfer</div>
+              <div class="how-desc">Foto atau screenshot bukti transfer dikirim ke WhatsApp kami untuk verifikasi.</div>
+            </div>
+          </div>
+          <div class="how-step">
+            <div class="how-num">4</div>
+            <div class="how-text">
+              <div class="how-title">Akun Pro Aktif</div>
+              <div class="how-desc">Setelah terverifikasi, akun Pro Anda langsung aktif dalam hitungan jam di hari kerja.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAYMENT METHODS -->
+    <div class="card" style="margin-bottom:10px;">
+      <div class="card-header">
+        <span class="card-title">Metode Pembayaran</span>
+      </div>
+      <div class="card-body" style="padding:16px 22px;">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+          <div class="payment-badge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+            Transfer Bank
+          </div>
+          <div class="payment-badge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z"/><path d="M12 6v6l4 2"/></svg>
+            GoPay
+          </div>
+          <div class="payment-badge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+            OVO
+          </div>
+          <div class="payment-badge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            DANA
+          </div>
+          <div class="payment-badge" style="grid-column:span 2;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+            ShopeePay
+          </div>
+        </div>
+        <div style="margin-top:12px; font-size:11px; color:var(--text-3); text-align:center; line-height:1.6;">
+          Detail nomor rekening &amp; e-wallet dikirim via WhatsApp<br>untuk menjaga privasi pemilik akun.
+        </div>
+      </div>
+    </div>
+
+    <!-- FAQ -->
+    <div class="card" style="margin-bottom:0;">
+      <div class="card-header"><span class="card-title">Pertanyaan Umum</span></div>
+      <div class="card-body" style="padding:16px 22px; display:flex; flex-direction:column; gap:0;">
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-q">Apakah ada kontrak jangka panjang?</div>
+          <svg class="faq-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          <div class="faq-a">Tidak ada. Anda berlangganan per bulan dan bisa berhenti kapan saja tanpa biaya tambahan.</div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-q">Berapa lama aktivasi setelah transfer?</div>
+          <svg class="faq-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          <div class="faq-a">Maksimal 1×24 jam di hari kerja. Rata-rata kami proses dalam 1–3 jam setelah bukti transfer diterima.</div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-q">Apakah data saya aman?</div>
+          <svg class="faq-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          <div class="faq-a">Saat ini semua data tersimpan lokal di perangkat Anda. Kami tidak menyimpan nama peserta atau riwayat undian di server kami.</div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)" style="border-bottom:none;">
+          <div class="faq-q">Bagaimana cara perpanjang langganan?</div>
+          <svg class="faq-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          <div class="faq-a">Cukup transfer kembali dan kirim buktinya via WhatsApp. Masa aktif akan diperpanjang otomatis dari tanggal berakhir sebelumnya.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer-wrap">
+    <div style="height:1px; background:linear-gradient(90deg, transparent, var(--border), transparent); margin-bottom:18px;"></div>
+    <div style="text-align:center; font-size:12px; color:var(--text-3); margin-bottom:12px;">
+      Data tersimpan otomatis di perangkat ini
+    </div>
+    <div class="footer-links">
+      <span class="footer-link" onclick="openPopup('about')">Tentang Kami</span>
+      <span class="footer-dot">·</span>
+      <span class="footer-link" onclick="openPopup('contact')">Contact Us</span>
+      <span class="footer-dot">·</span>
+      <span class="footer-link" onclick="openPopup('disclaimer')">Disclaimer</span>
+      <span class="footer-dot">·</span>
+      <span class="footer-link" onclick="openPopup('privacy')">Privacy Policy</span>
+    </div>
+    <div style="text-align:center; font-size:11px; color:var(--text-3); margin-top:12px; opacity:0.5;">© 2025 ArisanPro. All rights reserved.</div>
+  </div>
+
+</div><!-- /app-wrapper -->
+
+<!-- ====== POPUPS ====== -->
+<div class="popup-overlay" id="popupOverlay" onclick="closePopup()"></div>
+
+<!-- About -->
+<div class="popup" id="popup-about">
+  <div class="popup-header">
+    <div class="popup-title">Tentang Kami</div>
+    <button class="popup-close" onclick="closePopup()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="popup-body">
+    <p><strong>ArisanPro</strong> adalah platform digital yang dirancang khusus untuk membantu kelompok arisan melakukan pengundian secara adil, transparan, dan terpercaya.</p>
+    <p>Kami percaya bahwa kepercayaan adalah fondasi utama arisan. Itulah mengapa kami membangun sistem yang tidak memungkinkan manipulasi hasil — setiap pengundian dicatat dengan timestamp dan identifikasi unik yang tidak bisa diubah.</p>
+    <p>ArisanPro tidak terlibat dalam pengelolaan uang atau transaksi finansial. Kami hanya menyediakan infrastruktur pengundian yang dapat dipercaya oleh semua anggota kelompok.</p>
+    <div class="popup-badge">Versi 1.0.0 · Dibuat dengan sepenuh hati di Indonesia</div>
+  </div>
+</div>
+
+<!-- Contact -->
+<div class="popup" id="popup-contact">
+  <div class="popup-header">
+    <div class="popup-title">Contact Us</div>
+    <button class="popup-close" onclick="closePopup()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="popup-body">
+    <p>Kami senang mendengar dari Anda. Untuk pertanyaan, saran, laporan bug, atau kerja sama, silakan hubungi kami melalui email di bawah ini.</p>
+    <div class="contact-card">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      <a href="/cdn-cgi/l/email-protection#2a5e4f584743584f5f476a4d474b434604494547" style="color:var(--accent); text-decoration:none; font-weight:600; font-size:14px;"><span class="__cf_email__" data-cfemail="82f6e7f0efebf0e7f7efc2e5efe3ebeeace1edef">[email&#160;protected]</span></a>
+    </div>
+    <p style="font-size:12px; color:var(--text-3);">Kami berusaha membalas setiap pesan dalam 1×24 jam di hari kerja.</p>
+  </div>
+</div>
+
+<!-- Disclaimer -->
+<div class="popup" id="popup-disclaimer">
+  <div class="popup-header">
+    <div class="popup-title">Disclaimer</div>
+    <button class="popup-close" onclick="closePopup()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="popup-body">
+    <p><strong>ArisanPro hanya menyediakan layanan pengundian digital.</strong> Kami tidak bertanggung jawab atas segala bentuk transaksi finansial, perjanjian, atau perselisihan yang terjadi antar anggota kelompok arisan.</p>
+    <p>Hasil pengundian bersifat acak murni dan dihasilkan oleh algoritma yang tidak dapat dimanipulasi oleh pihak manapun, termasuk pengelola ArisanPro.</p>
+    <p>Pengguna bertanggung jawab penuh atas penggunaan platform ini dalam kelompok mereka. ArisanPro tidak dapat dijadikan dasar tuntutan hukum atas sengketa arisan.</p>
+    <p>Layanan ini disediakan "sebagaimana adanya" tanpa jaminan ketersediaan 100% sepanjang waktu. Kami berhak melakukan pemeliharaan atau pembaruan sistem sewaktu-waktu.</p>
+  </div>
+</div>
+
+<!-- Privacy Policy -->
+<div class="popup" id="popup-privacy">
+  <div class="popup-header">
+    <div class="popup-title">Privacy Policy</div>
+    <button class="popup-close" onclick="closePopup()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="popup-body">
+    <div class="privacy-section">
+      <div class="privacy-heading">Data yang Dikumpulkan</div>
+      <p>Pada versi ini, seluruh data (nama peserta, riwayat undian) disimpan secara lokal di perangkat Anda menggunakan localStorage browser. Kami tidak mengumpulkan, mengirim, atau menyimpan data pribadi Anda di server kami.</p>
+    </div>
+    <div class="privacy-section">
+      <div class="privacy-heading">Penggunaan Data</div>
+      <p>Data yang tersimpan di perangkat Anda hanya digunakan untuk keperluan fungsionalitas aplikasi — menampilkan daftar peserta dan riwayat pengundian. Data tidak dibagikan kepada pihak ketiga manapun.</p>
+    </div>
+    <div class="privacy-section">
+      <div class="privacy-heading">Keamanan Data</div>
+      <p>Karena data tersimpan lokal di perangkat Anda, keamanan data sepenuhnya bergantung pada keamanan perangkat dan browser yang Anda gunakan. Kami menyarankan untuk tidak menggunakan perangkat bersama untuk mengelola data arisan.</p>
+    </div>
+    <div class="privacy-section">
+      <div class="privacy-heading">Penghapusan Data</div>
+      <p>Anda dapat menghapus seluruh data kapan saja melalui menu Pengaturan → Reset Semua Data, atau dengan menghapus data localStorage browser Anda.</p>
+    </div>
+    <div class="privacy-section">
+      <div class="privacy-heading">Perubahan Kebijakan</div>
+      <p>Kami dapat memperbarui kebijakan privasi ini sewaktu-waktu. Perubahan akan diinformasikan melalui aplikasi.</p>
+    </div>
+    <div class="popup-badge" style="margin-top:8px;">Terakhir diperbarui: Januari 2025</div>
+  </div>
+</div>
+
+
+
+<div class="demo-overlay" id="demoOverlay">
+  <div class="demo-modal">
+    <div class="demo-badge">
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      Anda Sedang Demo
+    </div>
+    <div class="demo-title">Suka dengan <span>ArisanPro?</span></div>
+    <p class="demo-desc">Upgrade ke Pro dan nikmati fitur lengkap tanpa batas. Kelola semua kelompok arisan Anda dalam satu tempat.</p>
+    <div class="demo-features">
+      <div class="demo-feat"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Unlimited kelompok &amp; peserta</div>
+      <div class="demo-feat"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Export bukti PDF otomatis</div>
+      <div class="demo-feat"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Link live pengundian untuk anggota</div>
+    </div>
+    <div class="demo-actions">
+      <button class="demo-cta" onclick="goPricing()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        Lihat Pricing &amp; Berlangganan
+      </button>
+      <button class="demo-skip" id="demoSkipBtn" onclick="closeDemoPopup()">Lanjutkan demo</button>
+    </div>
+  </div>
+</div>
+
+<div class="demo-banner hidden" id="demoBanner" onclick="goPricing()">
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#7c6af7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+  <div class="demo-banner-text"><strong>Mode Demo Aktif</strong>Upgrade Pro — Rp 19.000/bulan</div>
+  <button class="demo-banner-btn">Berlangganan</button>
+</div>
+
+<script>
+
+// ═══════════════════════════════════
+//  STATE
+// ═══════════════════════════════════
+let S = {
+  members: [],      // [{id, name, wins:[roundNums]}]
+  history: [],      // [{round, name, timestamp}]
+  round: 1,
+  timerDuration: 30,
+  winnersCount: 1,
+  skipWinners: true,
+  nextId: 1,
+};
+
+let timerInt = null;
+let shuffleInt = null;
+
+// ═══════════════════════════════════
+//  STORAGE
+// ═══════════════════════════════════
+function save() {
+  try { localStorage.setItem('arisanpro_v3', JSON.stringify(S)); } catch(e) {}
+}
+function load() {
+  try {
+    const d = localStorage.getItem('arisanpro_v3');
+    if (d) S = Object.assign(S, JSON.parse(d));
+  } catch(e) {}
+}
+
+// ═══════════════════════════════════
+//  RENDER
+// ═══════════════════════════════════
+function render() {
+  renderMembers();
+  renderStats();
+  renderHistory();
+  renderToggle();
+  document.getElementById('timerSetting').textContent = S.timerDuration;
+  document.getElementById('winnersSetting').textContent = S.winnersCount;
+}
+
+function renderMembers() {
+  const list = document.getElementById('memberList');
+  const countBadge = document.getElementById('memberCountBadge');
+  countBadge.textContent = S.members.length + ' orang';
+
+  if (S.members.length === 0) {
+    list.innerHTML = '';
+    list.insertAdjacentHTML('beforeend', `
+      <div class="empty-state" id="emptyMembers">
+        <div class="empty-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.25">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        </div>
+        <div class="empty-text">Belum ada peserta.<br>Tambahkan nama di atas.</div>
+      </div>`);
+    return;
+  }
+
+  let html = '';
+  S.members.forEach((m, i) => {
+    const hasWon = m.wins && m.wins.length > 0;
+    const initial = m.name.charAt(0).toUpperCase();
+    const avC = 'av-' + (i % 6);
+    const wonC = hasWon ? 'won' : '';
+    const badge = hasWon ? `<span class="member-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:3px"><path d="M6 9H4a2 2 0 0 0-2 2v1a4 4 0 0 0 4 4h.5"/><path d="M18 9h2a2 2 0 0 1 2 2v1a4 4 0 0 1-4 4h-.5"/><path d="M8 21h8"/><path d="M12 17v4"/><path d="M6 3h12l-1 9a5 5 0 0 1-10 0Z"/></svg>Rnd ${m.wins.join(', ')}</span>` : '';
+    html += `<div class="member-item ${wonC}">
+      <div class="member-avatar ${avC}">${initial}</div>
+      <span class="member-name">${esc(m.name)}</span>
+      ${badge}
+      <button class="del-btn" onclick="removeMember(${m.id})">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>`;
+  });
+  list.innerHTML = html;
+}
+
+function renderStats() {
+  const total = S.members.length;
+  const won = S.members.filter(m => m.wins && m.wins.length > 0).length;
+  document.getElementById('stat-total').textContent = total;
+  document.getElementById('stat-menang').textContent = won;
+  document.getElementById('stat-sisa').textContent = total - won;
+  const pct = total > 0 ? Math.round(won / total * 100) : 0;
+  document.getElementById('progressPct').textContent = pct + '%';
+  document.getElementById('progressFill').style.width = pct + '%';
+}
+
+function renderHistory() {
+  const list = document.getElementById('historyList');
+  if (S.history.length === 0) {
+    list.innerHTML = `<div class="empty-state"><div class="empty-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.25"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div><div class="empty-text">Belum ada riwayat undian.</div></div>`;
+    return;
+  }
+  let html = '';
+  [...S.history].reverse().forEach(h => {
+    const d = new Date(h.timestamp);
+    const ds = d.toLocaleDateString('id-ID', {day:'numeric',month:'short',year:'numeric'})
+             + ' · ' + d.toLocaleTimeString('id-ID', {hour:'2-digit',minute:'2-digit'});
+    html += `<div class="history-item">
+      <div class="history-round">#${h.round}</div>
+      <div class="history-info">
+        <div class="history-name">${esc(h.name)}</div>
+        <div class="history-date">${ds}</div>
+      </div>
+      <div class="history-trophy"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4a2 2 0 0 0-2 2v1a4 4 0 0 0 4 4h.5"/><path d="M18 9h2a2 2 0 0 1 2 2v1a4 4 0 0 1-4 4h-.5"/><path d="M8 21h8"/><path d="M12 17v4"/><path d="M6 3h12l-1 9a5 5 0 0 1-10 0Z"/></svg></div>
+    </div>`;
+  });
+  list.innerHTML = html;
+}
+
+function renderToggle() {
+  const track = document.getElementById('toggleTrack');
+  if (S.skipWinners) track.classList.add('on'); else track.classList.remove('on');
+}
+
+// ═══════════════════════════════════
+//  MEMBERS
+// ═══════════════════════════════════
+function addMember() {
+  const inp = document.getElementById('newNameInput');
+  const name = inp.value.trim();
+  if (!name) { inp.focus(); return; }
+  if (S.members.some(m => m.name.toLowerCase() === name.toLowerCase())) {
+    showAlert('Nama "' + name + '" sudah ada dalam daftar.');
+    inp.select(); return;
+  }
+  S.members.push({ id: S.nextId++, name, wins: [] });
+  inp.value = '';
+  inp.focus();
+  hideAlert();
+  save(); render();
+}
+
+function removeMember(id) {
+  S.members = S.members.filter(m => m.id !== id);
+  save(); render();
+}
+
+function clearAllMembers() {
+  if (!S.members.length) return;
+  if (!confirm('Hapus semua peserta dari daftar?')) return;
+  S.members = [];
+  save(); render();
+}
+
+// ═══════════════════════════════════
+//  INPUT MODE SWITCHING
+// ═══════════════════════════════════
+function switchInputMode(mode) {
+  ['single','bulk','file'].forEach((m, i) => {
+    document.getElementById('mode-' + m).classList.toggle('hidden', m !== mode);
+    document.querySelectorAll('.inner-tab')[i].classList.toggle('active', m === mode);
+  });
+  if (mode === 'bulk') {
+    document.getElementById('bulkInput').focus();
+    updateBulkCount();
+  }
+}
+
+// ═══════════════════════════════════
+//  BULK IMPORT
+// ═══════════════════════════════════
+function updateBulkCount() {
+  const val = document.getElementById('bulkInput').value;
+  const names = parseNames(val);
+  const countEl = document.getElementById('bulkPreviewCount');
+  if (names.length === 0) { countEl.textContent = ''; return; }
+  const dupes = names.filter(n => S.members.some(m => m.name.toLowerCase() === n.toLowerCase()));
+  const newCount = names.length - dupes.length;
+  countEl.textContent = `${names.length} nama terdeteksi · ${newCount} baru · ${dupes.length} duplikat`;
+  countEl.style.color = newCount > 0 ? 'var(--accent)' : 'var(--text-3)';
+}
+
+function importBulk() {
+  const val = document.getElementById('bulkInput').value;
+  const names = parseNames(val);
+  if (names.length === 0) { showAlert('Tidak ada nama yang valid untuk diimport.'); return; }
+
+  let added = 0, skipped = 0;
+  names.forEach(name => {
+    if (S.members.some(m => m.name.toLowerCase() === name.toLowerCase())) { skipped++; return; }
+    S.members.push({ id: S.nextId++, name, wins: [] });
+    added++;
+  });
+
+  document.getElementById('bulkInput').value = '';
+  updateBulkCount();
+  hideAlert();
+  save(); render();
+
+  if (added > 0) {
+    showSuccess(`✓ ${added} peserta berhasil ditambahkan${skipped > 0 ? `, ${skipped} dilewati (duplikat)` : ''}.`);
+  } else {
+    showAlert(`Semua ${skipped} nama sudah ada dalam daftar.`);
+  }
+}
+
+function clearBulkInput() {
+  document.getElementById('bulkInput').value = '';
+  document.getElementById('bulkPreviewCount').textContent = '';
+}
+
+// ═══════════════════════════════════
+//  FILE IMPORT
+// ═══════════════════════════════════
+let pendingFileNames = [];
+
+function handleFile(input) {
+  const file = input.files[0];
+  if (!file) return;
+  processFile(file);
+}
+
+function dragOver(e) {
+  e.preventDefault();
+  document.getElementById('dropzone').classList.add('drag-over');
+}
+function dragLeave(e) {
+  document.getElementById('dropzone').classList.remove('drag-over');
+}
+function dropFile(e) {
+  e.preventDefault();
+  document.getElementById('dropzone').classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file) processFile(file);
+}
+
+function processFile(file) {
+  if (!file.name.match(/\.(txt|csv)$/i)) {
+    showAlert('Hanya file .txt atau .csv yang didukung.');
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const text = e.target.result;
+    const names = parseNames(text);
+    pendingFileNames = names;
+
+    const dupes = names.filter(n => S.members.some(m => m.name.toLowerCase() === n.toLowerCase()));
+    const newCount = names.length - dupes.length;
+
+    const preview = document.getElementById('filePreview');
+    const btn = document.getElementById('importFileBtn');
+
+    preview.classList.remove('hidden');
+    preview.innerHTML = `
+      <div style="margin-bottom:4px;"><strong style="color:var(--text)">${esc(file.name)}</strong></div>
+      <div>${names.length} nama ditemukan · <span style="color:var(--accent)">${newCount} baru</span> · ${dupes.length} duplikat</div>
+      ${names.length > 0 ? `<div style="margin-top:6px; color:var(--text-3); font-size:11px;">Contoh: ${names.slice(0,3).map(esc).join(', ')}${names.length > 3 ? '…' : ''}</div>` : ''}
+    `;
+    btn.disabled = newCount === 0;
+    if (newCount === 0) showAlert('Semua nama dari file sudah ada dalam daftar.');
+  };
+  reader.readAsText(file, 'UTF-8');
+}
+
+function importFromFile() {
+  if (!pendingFileNames.length) return;
+  let added = 0, skipped = 0;
+  pendingFileNames.forEach(name => {
+    if (S.members.some(m => m.name.toLowerCase() === name.toLowerCase())) { skipped++; return; }
+    S.members.push({ id: S.nextId++, name, wins: [] });
+    added++;
+  });
+  clearFileInput();
+  hideAlert();
+  save(); render();
+  if (added > 0) showSuccess(`✓ ${added} peserta berhasil diimport${skipped > 0 ? `, ${skipped} dilewati` : ''}.`);
+}
+
+function clearFileInput() {
+  pendingFileNames = [];
+  document.getElementById('fileInput').value = '';
+  document.getElementById('filePreview').classList.add('hidden');
+  document.getElementById('importFileBtn').disabled = true;
+}
+
+// ═══════════════════════════════════
+//  PARSE NAMES (shared)
+// ═══════════════════════════════════
+function parseNames(text) {
+  return text
+    .split(/[\n,;]+/)          // split by newline, comma, or semicolon
+    .map(n => n.trim())
+    .filter(n => n.length > 0 && n.length <= 60);
+}
+
+// ═══════════════════════════════════
+//  ARISAN
+// ═══════════════════════════════════
+function getEligible() {
+  if (S.skipWinners) {
+    const e = S.members.filter(m => !m.wins || m.wins.length === 0);
+    return e.length > 0 ? e : [...S.members];
+  }
+  return [...S.members];
+}
+
+function startArisan() {
+  hideAlert();
+  if (S.members.length < 2) { showAlert('Minimal 2 peserta diperlukan.'); return; }
+  const eligible = getEligible();
+  if (!eligible.length) { showAlert('Tidak ada peserta yang tersisa untuk diundi.'); return; }
+
+  const count = Math.min(S.winnersCount, eligible.length);
+  enterShuffle();
+  runShuffle(eligible, count);
+}
+
+function enterShuffle() {
+  document.getElementById('startBtn').classList.add('hidden');
+  document.getElementById('statsRow').classList.add('hidden');
+  document.getElementById('progressWrap').classList.add('hidden');
+  document.getElementById('memberCard').classList.add('hidden');
+  document.getElementById('screen-winner').classList.add('hidden');
+  document.getElementById('screen-shuffle').classList.remove('hidden');
+}
+
+function showInputScreen() {
+  clearIntervals();
+  document.getElementById('startBtn').classList.remove('hidden');
+  document.getElementById('statsRow').classList.remove('hidden');
+  document.getElementById('progressWrap').classList.remove('hidden');
+  document.getElementById('memberCard').classList.remove('hidden');
+  document.getElementById('screen-shuffle').classList.add('hidden');
+  document.getElementById('screen-winner').classList.add('hidden');
+}
+
+function runShuffle(eligible, count) {
+  let timeLeft = S.timerDuration;
+  const timerEl = document.getElementById('timerNum');
+  const arc = document.getElementById('timerArc');
+  const nameEl = document.getElementById('shuffleName');
+  const CIRC = 263.89;
+
+  timerEl.textContent = timeLeft;
+  timerEl.style.color = 'var(--text)';
+  arc.style.stroke = 'url(#arcGrad)';
+  arc.style.strokeDashoffset = 0;
+
+  shuffleInt = setInterval(() => {
+    nameEl.textContent = eligible[Math.floor(Math.random() * eligible.length)].name;
+  }, 75);
+
+  timerInt = setInterval(() => {
+    timeLeft--;
+    timerEl.textContent = timeLeft;
+    arc.style.strokeDashoffset = CIRC * (1 - timeLeft / S.timerDuration);
+
+    if (timeLeft <= 5) {
+      timerEl.style.color = 'var(--danger)';
+      arc.style.stroke = 'var(--danger)';
+    }
+    if (timeLeft <= 0) {
+      clearIntervals();
+      revealWinners(eligible, count);
+    }
+  }, 1000);
+}
+
+function revealWinners(eligible, count) {
+  const shuffled = [...eligible].sort(() => Math.random() - 0.5);
+  const winners = shuffled.slice(0, count);
+  const roundNum = S.round;
+
+  winners.forEach(w => {
+    const m = S.members.find(m => m.id === w.id);
+    if (m) { if (!m.wins) m.wins = []; m.wins.push(roundNum); }
+    S.history.push({ round: roundNum, name: w.name, timestamp: Date.now() });
+  });
+
+  S.round++;
+  save(); render();
+
+  document.getElementById('screen-shuffle').classList.add('hidden');
+  document.getElementById('screen-winner').classList.remove('hidden');
+  document.getElementById('winnerRoundLabel').textContent = 'Putaran ' + roundNum;
+  document.getElementById('winnerName').textContent = winners.map(w => w.name).join(' & ');
+
+  fireConfetti();
+}
+
+function nextRound() {
+  document.getElementById('screen-winner').classList.add('hidden');
+  startArisan();
+}
+
+function clearIntervals() {
+  clearInterval(timerInt); clearInterval(shuffleInt);
+}
+
+// ═══════════════════════════════════
+//  HISTORY / SETTINGS
+// ═══════════════════════════════════
+function clearHistory() {
+  if (!S.history.length) return;
+  if (!confirm('Hapus seluruh riwayat undian?')) return;
+  S.history = [];
+  save(); renderHistory();
+}
+
+function changeTimer(d) {
+  S.timerDuration = Math.max(5, Math.min(120, S.timerDuration + d));
+  document.getElementById('timerSetting').textContent = S.timerDuration;
+  save();
+}
+
+function changeWinners(d) {
+  const max = Math.max(1, S.members.length);
+  S.winnersCount = Math.max(1, Math.min(max, S.winnersCount + d));
+  document.getElementById('winnersSetting').textContent = S.winnersCount;
+  save();
+}
+
+function toggleSkip(el) {
+  S.skipWinners = !S.skipWinners;
+  renderToggle(); render(); save();
+}
+
+function resetAll() {
+  if (!confirm('Reset semua data? Peserta, riwayat, dan pengaturan akan dihapus.')) return;
+  clearIntervals();
+  S = { members:[], history:[], round:1, timerDuration:30, winnersCount:1, skipWinners:true, nextId:1 };
+  showInputScreen();
+  save(); render();
+  renderToggle();
+}
+
+// ═══════════════════════════════════
+//  PAGES
+// ═══════════════════════════════════
+function switchPage(page) {
+  ['undian','history','pricing','settings'].forEach((p, i) => {
+    document.getElementById('page-' + p).classList.toggle('hidden', p !== page);
+    document.querySelectorAll('.nav-tab')[i].classList.toggle('active', p === page);
+  });
+  if (page === 'history') renderHistory();
+}
+
+// ═══════════════════════════════════
+//  POPUPS
+// ═══════════════════════════════════
+function openPopup(name) {
+  document.getElementById('popupOverlay').classList.add('open');
+  document.getElementById('popup-' + name).classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closePopup() {
+  document.querySelectorAll('.popup.open').forEach(p => p.classList.remove('open'));
+  document.getElementById('popupOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+// Close popup on Escape key
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closePopup(); });
+
+// ═══════════════════════════════════
+//  WHATSAPP SUBSCRIBE
+// ═══════════════════════════════════
+function openWASubscribe() {
+  const msg = encodeURIComponent(
+    'Halo, saya tertarik berlangganan ArisanPro Plan Pro (Rp 19.000/bulan). Mohon info rekening/e-wallet untuk transfer. Terima kasih!'
+  );
+  window.open('https://wa.me/6285801256686?text=' + msg, '_blank');
+}
+
+// ═══════════════════════════════════
+//  FAQ TOGGLE
+// ═══════════════════════════════════
+function toggleFaq(el) {
+  const isOpen = el.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(f => f.classList.remove('open'));
+  if (!isOpen) el.classList.add('open');
+}
+function showAlert(msg) {
+  const el = document.getElementById('alertBox');
+  document.getElementById('alertMsg').textContent = msg;
+  el.classList.remove('alert-success');
+  el.classList.add('alert-danger');
+  el.classList.add('show');
+}
+function showSuccess(msg) {
+  const el = document.getElementById('alertBox');
+  document.getElementById('alertMsg').textContent = msg;
+  el.classList.remove('alert-danger');
+  el.classList.add('alert-success');
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 3500);
+}
+function hideAlert() { document.getElementById('alertBox').classList.remove('show'); }
+
+// ═══════════════════════════════════
+//  CONFETTI
+// ═══════════════════════════════════
+function fireConfetti() {
+  const end = Date.now() + 3500;
+  (function frame() {
+    confetti({ particleCount:5, angle:60, spread:60, origin:{x:0}, colors:['#7c6af7','#b06ef3','#fbbf24','#a89ef9'] });
+    confetti({ particleCount:5, angle:120, spread:60, origin:{x:1}, colors:['#7c6af7','#b06ef3','#fbbf24','#a89ef9'] });
+    if (Date.now() < end) requestAnimationFrame(frame);
+  })();
+}
+
+// ═══════════════════════════════════
+//  UTIL
+// ═══════════════════════════════════
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ═══════════════════════════════════
+//  INIT
+// ══════
+
+// DEMO MODE
+var demoPopupTimer = null;
+var demoSkipCountdown = null;
+
+function startDemoTimer() {
+  demoPopupTimer = setTimeout(showDemoPopup, 30000);
+}
+
+function showDemoPopup() {
+  document.getElementById('demoOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  var secs = 5;
+  var skipBtn = document.getElementById('demoSkipBtn');
+  skipBtn.textContent = 'Lanjutkan demo (' + secs + ')';
+  skipBtn.disabled = true;
+  skipBtn.style.opacity = '0.4';
+  demoSkipCountdown = setInterval(function() {
+    secs--;
+    skipBtn.textContent = secs > 0 ? 'Lanjutkan demo (' + secs + ')' : 'Lanjutkan demo';
+    if (secs <= 0) {
+      clearInterval(demoSkipCountdown);
+      skipBtn.disabled = false;
+      skipBtn.style.opacity = '1';
+    }
+  }, 1000);
+}
+
+function closeDemoPopup() {
+  clearInterval(demoSkipCountdown);
+  document.getElementById('demoOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+  document.getElementById('demoBanner').classList.remove('hidden');
+  startDemoTimer();
+}
+
+function goPricing() {
+  clearInterval(demoSkipCountdown);
+  clearTimeout(demoPopupTimer);
+  document.getElementById('demoOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+  document.getElementById('demoBanner').classList.add('hidden');
+  switchPage('pricing');
+  startDemoTimer();
+}
+
+startDemoTimer();
+
+</script>
+</body>
+</html>
