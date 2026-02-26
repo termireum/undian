@@ -424,10 +424,28 @@
   .av-4 { background: rgba(99,179,237,0.14); color: #63b3ed; }
   .av-5 { background: rgba(245,158,11,0.14); color: #f59e0b; }
 
+  /* RESPONSIVE */
+  @media (max-width: 480px) {
+    body { padding: 16px 12px 40px; }
+    .top-nav { margin-bottom: 14px; }
+    .nav-tabs { overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; }
+    .nav-tabs::-webkit-scrollbar { display: none; }
+    .nav-tab { padding: 6px 10px; font-size: 11px; white-space: nowrap; }
+    .logo { font-size: 16px; }
+    .card-body { padding: 16px; }
+    .card-header { padding: 14px 16px 13px; }
+  }
   @media (max-width: 400px) {
-    .winner-name { font-size: 28px; }
-    #shuffleName { font-size: 22px; }
-    .stats-row { gap: 6px; }
+    .winner-name { font-size: 26px; }
+    #shuffleName { font-size: 20px; }
+    .stats-row { gap: 5px; }
+    .stat-value { font-size: 20px; }
+    .stat-label { font-size: 9px; }
+    .btn { font-size: 13px; }
+  }
+  @media (min-width: 600px) {
+    .app-wrapper { padding: 0 8px; }
+    .popup { max-width: 460px; }
   }
 
   /* PRICING */
@@ -498,20 +516,31 @@
   /* POPUP */
   .popup {
     display: none; position: fixed;
-    bottom: 0; left: 50%; transform: translateX(-50%);
-    width: 100%; max-width: 480px;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) scale(0.95);
+    width: calc(100% - 32px); max-width: 460px;
     background: #1a1a22;
     border: 1px solid var(--border-hover);
-    border-bottom: none;
-    border-radius: 24px 24px 0 0;
+    border-radius: 20px;
     z-index: 101;
-    max-height: 80vh;
+    max-height: 85vh;
     overflow: hidden;
     flex-direction: column;
-    animation: slideUp 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    opacity: 0;
+    transition: transform 0.25s cubic-bezier(0.34,1.4,0.64,1), opacity 0.2s ease;
   }
-  .popup.open { display: flex; }
-  @keyframes slideUp { from { transform: translateX(-50%) translateY(100%); } to { transform: translateX(-50%) translateY(0); } }
+  .popup.open {
+    display: flex;
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+  .popup-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);
+    z-index: 100;
+    opacity: 0; transition: opacity 0.2s ease;
+  }
+  .popup-overlay.open { display: block; opacity: 1; }
 
   .popup-header {
     display: flex; align-items: center; justify-content: space-between;
@@ -549,7 +578,6 @@
   }
   .privacy-section { display: flex; flex-direction: column; gap: 6px; }
   .privacy-heading { font-size: 13px; font-weight: 700; color: var(--text); }
-
   /* DEMO POPUP */
   .demo-overlay {
     display:none; position:fixed; inset:0;
@@ -624,17 +652,98 @@
 
   <!-- TOP NAV -->
   <div class="top-nav">
-    <div class="logo">Arisan<span>Pro</span></div>
+    <div class="logo" onclick="switchPage('home')" style="cursor:pointer;" title="Beranda">Arisan<span>Pro</span></div>
     <div class="nav-tabs">
-      <button class="nav-tab active" onclick="switchPage('undian')">Undian</button>
+      <button class="nav-tab active" onclick="switchPage('home')">Home</button>
+      <button class="nav-tab" onclick="switchPage('undian')">Undian</button>
       <button class="nav-tab" onclick="switchPage('history')">Riwayat</button>
       <button class="nav-tab" onclick="switchPage('pricing')">Pricing</button>
-      <button class="nav-tab" onclick="switchPage('settings')">Pengaturan</button>
+      <button class="nav-tab" onclick="switchPage('settings')">Lainnya</button>
+    </div>
+  </div>
+
+  <!-- ====== PAGE: HOME ====== -->
+  <div id="page-home">
+    <div style="text-align:center; padding: 12px 0 24px;">
+      <div style="font-size:48px; font-weight:900; color:var(--text); line-height:1; margin-bottom:4px;">Arisan<span style="background:linear-gradient(135deg,#7c6af7,#b06ef3);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Pro</span></div>
+      <div style="font-size:13px; color:var(--text-3); margin-top:6px;">Platform Pengundian Arisan Digital</div>
+    </div>
+
+    <div class="card" style="margin-bottom:10px;">
+      <div class="card-body" style="padding:22px;">
+        <div style="font-size:13px; font-weight:700; color:var(--text); margin-bottom:12px;">Selamat Datang di ArisanPro</div>
+        <p style="font-size:13px; color:var(--text-2); line-height:1.75; margin-bottom:16px;">ArisanPro membantu kelompok arisan Anda melakukan pengundian secara <strong style="color:var(--text)">adil, transparan, dan terpercaya</strong> — langsung dari smartphone, tanpa perlu kumpul fisik.</p>
+        <button class="btn btn-primary btn-full" onclick="switchPage('undian')" style="height:46px; border-radius:12px; font-size:14px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="8.5" cy="8.5" r="1.2" fill="currentColor" stroke="none"/><circle cx="15.5" cy="8.5" r="1.2" fill="currentColor" stroke="none"/><circle cx="8.5" cy="15.5" r="1.2" fill="currentColor" stroke="none"/><circle cx="15.5" cy="15.5" r="1.2" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"/></svg>
+          Mulai Pengundian
+        </button>
+      </div>
+    </div>
+
+    <div class="stats-row" style="margin-bottom:10px;">
+      <div class="stat-box" style="cursor:pointer;" onclick="switchPage('undian')">
+        <div style="font-size:22px; margin-bottom:4px;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <div class="stat-label">Undian</div>
+      </div>
+      <div class="stat-box" style="cursor:pointer;" onclick="switchPage('history')">
+        <div style="font-size:22px; margin-bottom:4px;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        </div>
+        <div class="stat-label">Riwayat</div>
+      </div>
+      <div class="stat-box" style="cursor:pointer;" onclick="switchPage('pricing')">
+        <div style="font-size:22px; margin-bottom:4px;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </div>
+        <div class="stat-label">Pricing</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:10px;">
+      <div class="card-header"><span class="card-title">Keunggulan ArisanPro</span></div>
+      <div class="card-body" style="padding:18px 22px; display:flex; flex-direction:column; gap:14px;">
+        <div style="display:flex; gap:14px; align-items:flex-start;">
+          <div style="width:36px;height:36px;border-radius:10px;background:rgba(124,106,247,0.12);border:1px solid rgba(124,106,247,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div><div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px;">Tidak Bisa Dimanipulasi</div><div style="font-size:12px;color:var(--text-3);line-height:1.6;">Hasil undian dicatat dengan timestamp unik yang tidak bisa diubah siapapun.</div></div>
+        </div>
+        <div style="display:flex; gap:14px; align-items:flex-start;">
+          <div style="width:36px;height:36px;border-radius:10px;background:rgba(74,222,128,0.1);border:1px solid rgba(74,222,128,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <div><div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px;">Import 100+ Peserta Sekaligus</div><div style="font-size:12px;color:var(--text-3);line-height:1.6;">Tambahkan ratusan nama via paste teks atau upload file .txt/.csv.</div></div>
+        </div>
+        <div style="display:flex; gap:14px; align-items:flex-start;">
+          <div style="width:36px;height:36px;border-radius:10px;background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <div><div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px;">Riwayat Otomatis</div><div style="font-size:12px;color:var(--text-3);line-height:1.6;">Setiap putaran tercatat lengkap dengan tanggal dan waktu.</div></div>
+        </div>
+        <div style="display:flex; gap:14px; align-items:flex-start;">
+          <div style="width:36px;height:36px;border-radius:10px;background:rgba(99,179,237,0.1);border:1px solid rgba(99,179,237,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#63b3ed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+          </div>
+          <div><div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px;">100% Berbasis Browser</div><div style="font-size:12px;color:var(--text-3);line-height:1.6;">Tidak perlu install app. Buka langsung dari browser HP manapun.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:0;">
+      <div class="card-body" style="padding:16px 22px; display:flex; align-items:center; justify-content:space-between;">
+        <div>
+          <div style="font-size:13px; font-weight:700; color:var(--text); margin-bottom:2px;">Upgrade ke Pro</div>
+          <div style="font-size:11px; color:var(--text-3);">Rp 19.000/bulan · Unlimited segalanya</div>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="switchPage('pricing')" style="padding:0 16px; flex-shrink:0;">Lihat Plan</button>
+      </div>
     </div>
   </div>
 
   <!-- ====== PAGE: UNDIAN ====== -->
-  <div id="page-undian">
+  <div id="page-undian" class="hidden">
 
     <!-- Stats -->
     <div class="stats-row" id="statsRow">
@@ -1191,36 +1300,6 @@
 </div>
 
 
-
-<div class="demo-overlay" id="demoOverlay">
-  <div class="demo-modal">
-    <div class="demo-badge">
-      <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-      Anda Sedang Demo
-    </div>
-    <div class="demo-title">Suka dengan <span>ArisanPro?</span></div>
-    <p class="demo-desc">Upgrade ke Pro dan nikmati fitur lengkap tanpa batas. Kelola semua kelompok arisan Anda dalam satu tempat.</p>
-    <div class="demo-features">
-      <div class="demo-feat"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Unlimited kelompok &amp; peserta</div>
-      <div class="demo-feat"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Export bukti PDF otomatis</div>
-      <div class="demo-feat"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Link live pengundian untuk anggota</div>
-    </div>
-    <div class="demo-actions">
-      <button class="demo-cta" onclick="goPricing()">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-        Lihat Pricing &amp; Berlangganan
-      </button>
-      <button class="demo-skip" id="demoSkipBtn" onclick="closeDemoPopup()">Lanjutkan demo</button>
-    </div>
-  </div>
-</div>
-
-<div class="demo-banner hidden" id="demoBanner" onclick="goPricing()">
-  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#7c6af7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-  <div class="demo-banner-text"><strong>Mode Demo Aktif</strong>Upgrade Pro — Rp 19.000/bulan</div>
-  <button class="demo-banner-btn">Berlangganan</button>
-</div>
-
 <script>
 
 // ═══════════════════════════════════
@@ -1659,11 +1738,12 @@ function resetAll() {
 //  PAGES
 // ═══════════════════════════════════
 function switchPage(page) {
-  ['undian','history','pricing','settings'].forEach((p, i) => {
+  ['home','undian','history','pricing','settings'].forEach((p, i) => {
     document.getElementById('page-' + p).classList.toggle('hidden', p !== page);
     document.querySelectorAll('.nav-tab')[i].classList.toggle('active', p === page);
   });
   if (page === 'history') renderHistory();
+  window.scrollTo({top: 0, behavior: 'smooth'});
 }
 
 // ═══════════════════════════════════
@@ -1787,6 +1867,37 @@ function goPricing() {
 
 startDemoTimer();
 
+
 </script>
+
+<div class="demo-overlay" id="demoOverlay">
+  <div class="demo-modal">
+    <div class="demo-badge">
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      Anda Sedang Demo
+    </div>
+    <div class="demo-title">Suka dengan <span>ArisanPro?</span></div>
+    <p class="demo-desc">Upgrade ke Pro dan nikmati fitur lengkap tanpa batas. Kelola semua kelompok arisan Anda dalam satu tempat.</p>
+    <div class="demo-features">
+      <div class="demo-feat"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Unlimited kelompok &amp; peserta</div>
+      <div class="demo-feat"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Export bukti PDF otomatis</div>
+      <div class="demo-feat"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Link live pengundian untuk anggota</div>
+    </div>
+    <div class="demo-actions">
+      <button class="demo-cta" onclick="goPricing()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        Lihat Pricing &amp; Berlangganan
+      </button>
+      <button class="demo-skip" id="demoSkipBtn" onclick="closeDemoPopup()">Lanjutkan demo</button>
+    </div>
+  </div>
+</div>
+
+<div class="demo-banner hidden" id="demoBanner" onclick="goPricing()">
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#7c6af7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+  <div class="demo-banner-text"><strong>Mode Demo Aktif</strong>Upgrade Pro — Rp 19.000/bulan</div>
+  <button class="demo-banner-btn">Berlangganan</button>
+</div>
+
 </body>
 </html>
