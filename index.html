@@ -429,6 +429,89 @@
     #shuffleName { font-size: 22px; }
     .stats-row { gap: 6px; }
   }
+
+  /* PRICING */
+  .pricing-feature {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 13px; font-weight: 500; color: var(--text-2);
+  }
+  .pricing-feature.disabled { color: var(--text-3); }
+
+  /* FOOTER */
+  .footer-wrap { margin-top: 24px; padding-bottom: 8px; }
+  .footer-links {
+    display: flex; align-items: center; justify-content: center;
+    flex-wrap: wrap; gap: 6px;
+  }
+  .footer-link {
+    font-size: 12px; color: var(--text-3); cursor: pointer;
+    font-weight: 500; transition: color 0.15s; padding: 2px 0;
+  }
+  .footer-link:hover { color: var(--accent); }
+  .footer-dot { font-size: 12px; color: var(--text-3); opacity: 0.4; }
+
+  /* POPUP OVERLAY */
+  .popup-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);
+    z-index: 100;
+  }
+  .popup-overlay.open { display: block; }
+
+  /* POPUP */
+  .popup {
+    display: none; position: fixed;
+    bottom: 0; left: 50%; transform: translateX(-50%);
+    width: 100%; max-width: 480px;
+    background: #1a1a22;
+    border: 1px solid var(--border-hover);
+    border-bottom: none;
+    border-radius: 24px 24px 0 0;
+    z-index: 101;
+    max-height: 80vh;
+    overflow: hidden;
+    flex-direction: column;
+    animation: slideUp 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .popup.open { display: flex; }
+  @keyframes slideUp { from { transform: translateX(-50%) translateY(100%); } to { transform: translateX(-50%) translateY(0); } }
+
+  .popup-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 22px 16px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .popup-title { font-size: 16px; font-weight: 700; color: var(--text); }
+  .popup-close {
+    background: var(--surface2); border: 1px solid var(--border);
+    color: var(--text-2); border-radius: 8px; cursor: pointer;
+    width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s; flex-shrink: 0;
+  }
+  .popup-close:hover { color: var(--text); border-color: var(--border-hover); }
+
+  .popup-body {
+    padding: 20px 22px 32px;
+    overflow-y: auto; flex: 1;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .popup-body p {
+    font-size: 13px; color: var(--text-2); line-height: 1.75;
+  }
+  .popup-badge {
+    display: inline-block; font-size: 11px; font-weight: 600;
+    padding: 4px 12px; border-radius: 20px;
+    background: rgba(124,106,247,0.1); border: 1px solid rgba(124,106,247,0.2);
+    color: #a89ef9; margin-top: 4px;
+  }
+  .contact-card {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 14px 16px;
+  }
+  .privacy-section { display: flex; flex-direction: column; gap: 6px; }
+  .privacy-heading { font-size: 13px; font-weight: 700; color: var(--text); }
 </style>
 </head>
 <body>
@@ -440,6 +523,7 @@
     <div class="nav-tabs">
       <button class="nav-tab active" onclick="switchPage('undian')">Undian</button>
       <button class="nav-tab" onclick="switchPage('history')">Riwayat</button>
+      <button class="nav-tab" onclick="switchPage('pricing')">Pricing</button>
       <button class="nav-tab" onclick="switchPage('settings')">Pengaturan</button>
     </div>
   </div>
@@ -722,9 +806,217 @@
     </div>
   </div>
 
-  <div class="footer">Data tersimpan otomatis di perangkat ini</div>
+  <!-- ====== PAGE: PRICING ====== -->
+  <div id="page-pricing" class="hidden">
+    <div style="text-align:center; margin-bottom:20px;">
+      <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:var(--text-3); margin-bottom:8px;">Pilih Plan</div>
+      <div style="font-family:'Inter',sans-serif; font-size:26px; font-weight:800; color:var(--text); margin-bottom:6px;">Sederhana & Transparan</div>
+      <div style="font-size:13px; color:var(--text-3); line-height:1.6;">Tidak ada biaya tersembunyi.<br>Batalkan kapan saja.</div>
+    </div>
+
+    <!-- Free Card -->
+    <div class="card mb-12" style="margin-bottom:10px;">
+      <div class="card-body" style="padding:22px;">
+        <div style="display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:16px;">
+          <div>
+            <div style="font-size:12px; font-weight:600; color:var(--text-3); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:4px;">Gratis</div>
+            <div style="font-family:'Inter',sans-serif; font-size:32px; font-weight:800; color:var(--text); line-height:1;">Rp 0</div>
+            <div style="font-size:11px; color:var(--text-3); margin-top:4px;">Selamanya</div>
+          </div>
+          <div style="background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:10px; padding:8px 12px; font-size:12px; font-weight:600; color:var(--text-2);">Aktif Sekarang</div>
+        </div>
+        <div class="divider"></div>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <div class="pricing-feature">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>1 kelompok arisan</span>
+          </div>
+          <div class="pricing-feature">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>Maksimal 15 peserta</span>
+          </div>
+          <div class="pricing-feature">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>Riwayat pengundian</span>
+          </div>
+          <div class="pricing-feature disabled">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            <span>Unlimited kelompok</span>
+          </div>
+          <div class="pricing-feature disabled">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            <span>Export bukti PDF</span>
+          </div>
+          <div class="pricing-feature disabled">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            <span>Link live pengundian</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pro Card -->
+    <div class="card mb-12" style="margin-bottom:10px; border-color:rgba(124,106,247,0.4); position:relative; overflow:visible;">
+      <div style="position:absolute; top:-11px; left:50%; transform:translateX(-50%); background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; font-size:11px; font-weight:700; padding:4px 14px; border-radius:20px; white-space:nowrap; letter-spacing:0.05em;">PALING POPULER</div>
+      <div class="card-body" style="padding:22px;">
+        <div style="display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:16px;">
+          <div>
+            <div style="font-size:12px; font-weight:600; color:var(--accent); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:4px;">Pro</div>
+            <div style="display:flex; align-items:baseline; gap:6px;">
+              <div style="font-family:'Inter',sans-serif; font-size:32px; font-weight:800; color:var(--text); line-height:1;">Rp 19.000</div>
+            </div>
+            <div style="font-size:11px; color:var(--text-3); margin-top:4px;">per bulan · per kelompok</div>
+          </div>
+        </div>
+        <div class="divider"></div>
+        <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:18px;">
+          <div class="pricing-feature">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>Unlimited kelompok arisan</span>
+          </div>
+          <div class="pricing-feature">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>Unlimited peserta</span>
+          </div>
+          <div class="pricing-feature">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>Export bukti PDF otomatis</span>
+          </div>
+          <div class="pricing-feature">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>Link live pengundian</span>
+          </div>
+          <div class="pricing-feature">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>Riwayat lengkap semua putaran</span>
+          </div>
+          <div class="pricing-feature">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>Prioritas dukungan teknis</span>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-full" style="height:46px; font-size:14px; border-radius:12px;">
+          Mulai Gratis 14 Hari
+        </button>
+        <div style="text-align:center; font-size:11px; color:var(--text-3); margin-top:10px;">Tidak perlu kartu kredit</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:0;">
+      <div class="card-body" style="padding:16px 22px; text-align:center;">
+        <div style="font-size:12px; color:var(--text-3); line-height:1.8;">
+          Ada pertanyaan soal pricing?<br>
+          <span style="color:var(--accent); cursor:pointer; font-weight:500;" onclick="openPopup('contact')">Hubungi kami</span> — kami siap membantu.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer-wrap">
+    <div style="height:1px; background:linear-gradient(90deg, transparent, var(--border), transparent); margin-bottom:18px;"></div>
+    <div style="text-align:center; font-size:12px; color:var(--text-3); margin-bottom:12px;">
+      Data tersimpan otomatis di perangkat ini
+    </div>
+    <div class="footer-links">
+      <span class="footer-link" onclick="openPopup('about')">Tentang Kami</span>
+      <span class="footer-dot">·</span>
+      <span class="footer-link" onclick="openPopup('contact')">Contact Us</span>
+      <span class="footer-dot">·</span>
+      <span class="footer-link" onclick="openPopup('disclaimer')">Disclaimer</span>
+      <span class="footer-dot">·</span>
+      <span class="footer-link" onclick="openPopup('privacy')">Privacy Policy</span>
+    </div>
+    <div style="text-align:center; font-size:11px; color:var(--text-3); margin-top:12px; opacity:0.5;">© 2025 ArisanPro. All rights reserved.</div>
+  </div>
 
 </div><!-- /app-wrapper -->
+
+<!-- ====== POPUPS ====== -->
+<div class="popup-overlay" id="popupOverlay" onclick="closePopup()"></div>
+
+<!-- About -->
+<div class="popup" id="popup-about">
+  <div class="popup-header">
+    <div class="popup-title">Tentang Kami</div>
+    <button class="popup-close" onclick="closePopup()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="popup-body">
+    <p><strong>ArisanPro</strong> adalah platform digital yang dirancang khusus untuk membantu kelompok arisan melakukan pengundian secara adil, transparan, dan terpercaya.</p>
+    <p>Kami percaya bahwa kepercayaan adalah fondasi utama arisan. Itulah mengapa kami membangun sistem yang tidak memungkinkan manipulasi hasil — setiap pengundian dicatat dengan timestamp dan identifikasi unik yang tidak bisa diubah.</p>
+    <p>ArisanPro tidak terlibat dalam pengelolaan uang atau transaksi finansial. Kami hanya menyediakan infrastruktur pengundian yang dapat dipercaya oleh semua anggota kelompok.</p>
+    <div class="popup-badge">Versi 1.0.0 · Dibuat dengan sepenuh hati di Indonesia</div>
+  </div>
+</div>
+
+<!-- Contact -->
+<div class="popup" id="popup-contact">
+  <div class="popup-header">
+    <div class="popup-title">Contact Us</div>
+    <button class="popup-close" onclick="closePopup()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="popup-body">
+    <p>Kami senang mendengar dari Anda. Untuk pertanyaan, saran, laporan bug, atau kerja sama, silakan hubungi kami melalui email di bawah ini.</p>
+    <div class="contact-card">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      <a href="mailto:termireum@gmail.com" style="color:var(--accent); text-decoration:none; font-weight:600; font-size:14px;">termireum@gmail.com</a>
+    </div>
+    <p style="font-size:12px; color:var(--text-3);">Kami berusaha membalas setiap pesan dalam 1×24 jam di hari kerja.</p>
+  </div>
+</div>
+
+<!-- Disclaimer -->
+<div class="popup" id="popup-disclaimer">
+  <div class="popup-header">
+    <div class="popup-title">Disclaimer</div>
+    <button class="popup-close" onclick="closePopup()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="popup-body">
+    <p><strong>ArisanPro hanya menyediakan layanan pengundian digital.</strong> Kami tidak bertanggung jawab atas segala bentuk transaksi finansial, perjanjian, atau perselisihan yang terjadi antar anggota kelompok arisan.</p>
+    <p>Hasil pengundian bersifat acak murni dan dihasilkan oleh algoritma yang tidak dapat dimanipulasi oleh pihak manapun, termasuk pengelola ArisanPro.</p>
+    <p>Pengguna bertanggung jawab penuh atas penggunaan platform ini dalam kelompok mereka. ArisanPro tidak dapat dijadikan dasar tuntutan hukum atas sengketa arisan.</p>
+    <p>Layanan ini disediakan "sebagaimana adanya" tanpa jaminan ketersediaan 100% sepanjang waktu. Kami berhak melakukan pemeliharaan atau pembaruan sistem sewaktu-waktu.</p>
+  </div>
+</div>
+
+<!-- Privacy Policy -->
+<div class="popup" id="popup-privacy">
+  <div class="popup-header">
+    <div class="popup-title">Privacy Policy</div>
+    <button class="popup-close" onclick="closePopup()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="popup-body">
+    <div class="privacy-section">
+      <div class="privacy-heading">Data yang Dikumpulkan</div>
+      <p>Pada versi ini, seluruh data (nama peserta, riwayat undian) disimpan secara lokal di perangkat Anda menggunakan localStorage browser. Kami tidak mengumpulkan, mengirim, atau menyimpan data pribadi Anda di server kami.</p>
+    </div>
+    <div class="privacy-section">
+      <div class="privacy-heading">Penggunaan Data</div>
+      <p>Data yang tersimpan di perangkat Anda hanya digunakan untuk keperluan fungsionalitas aplikasi — menampilkan daftar peserta dan riwayat pengundian. Data tidak dibagikan kepada pihak ketiga manapun.</p>
+    </div>
+    <div class="privacy-section">
+      <div class="privacy-heading">Keamanan Data</div>
+      <p>Karena data tersimpan lokal di perangkat Anda, keamanan data sepenuhnya bergantung pada keamanan perangkat dan browser yang Anda gunakan. Kami menyarankan untuk tidak menggunakan perangkat bersama untuk mengelola data arisan.</p>
+    </div>
+    <div class="privacy-section">
+      <div class="privacy-heading">Penghapusan Data</div>
+      <p>Anda dapat menghapus seluruh data kapan saja melalui menu Pengaturan → Reset Semua Data, atau dengan menghapus data localStorage browser Anda.</p>
+    </div>
+    <div class="privacy-section">
+      <div class="privacy-heading">Perubahan Kebijakan</div>
+      <p>Kami dapat memperbarui kebijakan privasi ini sewaktu-waktu. Perubahan akan diinformasikan melalui aplikasi.</p>
+    </div>
+    <div class="popup-badge" style="margin-top:8px;">Terakhir diperbarui: Januari 2025</div>
+  </div>
+</div>
 
 <script>
 // ═══════════════════════════════════
@@ -1163,12 +1455,28 @@ function resetAll() {
 //  PAGES
 // ═══════════════════════════════════
 function switchPage(page) {
-  ['undian','history','settings'].forEach((p, i) => {
+  ['undian','history','pricing','settings'].forEach((p, i) => {
     document.getElementById('page-' + p).classList.toggle('hidden', p !== page);
     document.querySelectorAll('.nav-tab')[i].classList.toggle('active', p === page);
   });
   if (page === 'history') renderHistory();
 }
+
+// ═══════════════════════════════════
+//  POPUPS
+// ═══════════════════════════════════
+function openPopup(name) {
+  document.getElementById('popupOverlay').classList.add('open');
+  document.getElementById('popup-' + name).classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closePopup() {
+  document.querySelectorAll('.popup.open').forEach(p => p.classList.remove('open'));
+  document.getElementById('popupOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+// Close popup on Escape key
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closePopup(); });
 
 // ═══════════════════════════════════
 //  ALERTS
