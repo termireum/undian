@@ -3,115 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QuickRaffle | Undian Instan 30 Detik</title>
+    <title>Arisan Digital Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
-        @keyframes pop {
-            0% { transform: scale(0.8); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-        .animate-pop { animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        
-        /* Gaya khusus untuk angka countdown yang berdetak */
-        .ticking {
-            animation: pulse-fast 1s infinite;
-        }
-        @keyframes pulse-fast {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.1); opacity: 0.8; }
-        }
+        @keyframes bounce-slow { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        .animate-bounce-slow { animation: bounce-slow 2s infinite; }
+        .shuffling { color: #4f46e5; transition: all 0.1s ease-in-out; }
     </style>
 </head>
-<body class="bg-slate-100 min-h-screen flex items-center justify-center p-4 font-sans">
+<body class="bg-gradient-to-br from-indigo-500 to-purple-600 min-h-screen flex items-center justify-center p-4 font-sans text-slate-800">
 
-    <div class="bg-white p-8 rounded-3xl shadow-2xl w-full max-w-lg border border-slate-200">
-        <div class="text-center mb-8">
-            <h1 class="text-3xl font-extrabold text-indigo-600 tracking-tight">🎯 QuickRaffle</h1>
-            <p class="text-slate-500 text-sm mt-1">Cepat, Adil, & Tanpa Login</p>
+    <div class="bg-white p-8 rounded-[2rem] shadow-2xl w-full max-w-lg border-4 border-white/20 backdrop-blur-sm">
+        
+        <div class="text-center mb-6">
+            <div class="inline-block bg-yellow-400 text-yellow-900 px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest mb-2 shadow-sm">
+                Arisan Digital
+            </div>
+            <h1 class="text-4xl font-black text-slate-800 tracking-tight leading-none">SIAPA MENANG?</h1>
         </div>
         
-        <div id="inputSection">
-            <label class="block text-sm font-semibold text-slate-700 mb-2">Daftar Peserta (Pisahkan dengan baris baru)</label>
-            <textarea id="listInput" rows="6" 
-                class="w-full p-4 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all bg-slate-50 text-slate-700 placeholder:text-slate-400"
-                placeholder="Masukkan nama pemenang di sini...&#10;Contoh:&#10;Andi Hermawan&#10;Siti Aminah&#10;Budi Cahyono"></textarea>
+        <div id="ui-input" class="space-y-4">
+            <div class="bg-slate-50 p-4 rounded-2xl border-2 border-slate-100">
+                <label class="block text-sm font-bold text-slate-500 mb-2 uppercase tracking-wide">Daftar Anggota Arisan</label>
+                <textarea id="namesInput" rows="8" 
+                    class="w-full bg-transparent border-none focus:ring-0 outline-none text-lg font-medium text-slate-700 placeholder:text-slate-300 resize-none"
+                    placeholder="Tulis nama peserta...&#10;Contoh:&#10;Ibu Siska&#10;Pak RT&#10;Mbak Dini"></textarea>
+            </div>
             
-            <button id="drawBtn" onclick="startRaffle()" 
-                class="w-full mt-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-xl transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2">
-                <span>MULAI UNDIAN</span>
+            <button onclick="startArisan()" 
+                class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-black py-5 rounded-2xl transition-all shadow-[0_8px_0_rgb(49,46,129)] active:shadow-none active:translate-y-2 text-xl italic tracking-wider">
+                KOCOK SEKARANG! 🎲
             </button>
         </div>
 
-        <div id="countdownContainer" class="hidden py-10 text-center">
-            <p class="text-slate-500 font-medium mb-4 uppercase tracking-widest">Mengacak Nama...</p>
-            <div id="countdownNumber" class="text-8xl font-black text-indigo-600 ticking">30</div>
-            <p class="mt-6 text-slate-400 italic text-sm">Harap tunggu sebentar...</p>
+        <div id="ui-shuffling" class="hidden py-10 text-center">
+            <div id="timer" class="text-2xl font-black text-red-500 mb-2 bg-red-50 inline-block px-4 py-1 rounded-full">30</div>
+            <p class="text-slate-400 font-bold uppercase text-xs tracking-tighter mb-8 italic">Sedang mengocok nama...</p>
+            
+            <div class="h-24 flex items-center justify-center">
+                <div id="nameDisplay" class="text-4xl font-black text-slate-800 uppercase tracking-tighter transition-all italic">---</div>
+            </div>
+            
+            <div class="mt-8 animate-bounce-slow text-4xl">🎰</div>
         </div>
 
-        <div id="resultContainer" class="hidden py-8 text-center animate-pop">
-            <div class="inline-block p-4 rounded-full bg-green-100 text-green-600 mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
-                </svg>
-            </div>
-            <p class="text-slate-500 font-medium mb-1">Selamat kepada:</p>
-            <h2 id="winnerName" class="text-4xl font-black text-slate-900 mb-8 break-words px-4"></h2>
+        <div id="ui-winner" class="hidden py-6 text-center">
+            <div class="text-6xl mb-4">👑</div>
+            <p class="text-indigo-500 font-black uppercase tracking-[0.2em] mb-2 text-sm">Pemenang Arisan:</p>
+            <h2 id="finalWinner" class="text-5xl font-black text-slate-900 break-words mb-10 px-2 drop-shadow-sm"></h2>
             
-            <button onclick="resetRaffle()" 
-                class="text-indigo-600 font-semibold hover:underline decoration-2 underline-offset-4">
-                Coba Undi Lagi
+            <button onclick="resetGame()" 
+                class="bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-3 px-8 rounded-xl transition-all text-sm uppercase">
+                Kocok Lagi
             </button>
         </div>
     </div>
 
     <script>
-        let countdownTimer;
+        let intervalShuffle;
+        let intervalTimer;
 
-        function startRaffle() {
-            const inputElement = document.getElementById('listInput');
-            const names = inputElement.value.split('\n')
-                            .map(name => name.trim())
-                            .filter(name => name !== "");
-            
+        function startArisan() {
+            const input = document.getElementById('namesInput').value;
+            const names = input.split('\n').map(n => n.trim()).filter(n => n !== "");
+
             if (names.length < 2) {
-                alert("Mohon masukkan minimal 2 nama untuk diundi!");
+                alert("Masukkan minimal 2 orang peserta arisan!");
                 return;
             }
 
-            // UI Transitions
-            document.getElementById('inputSection').classList.add('hidden');
-            document.getElementById('countdownContainer').classList.remove('hidden');
+            // Ganti UI ke mode kocok
+            document.getElementById('ui-input').classList.add('hidden');
+            document.getElementById('ui-shuffling').classList.remove('hidden');
 
-            let timeLeft = 30; // 30 Detik sesuai permintaan
-            const countdownNumber = document.getElementById('countdownNumber');
+            let timeLeft = 30;
+            const timerEl = document.getElementById('timer');
+            const nameEl = document.getElementById('nameDisplay');
 
-            countdownTimer = setInterval(() => {
+            // 1. Logika Pengurangan Waktu
+            intervalTimer = setInterval(() => {
                 timeLeft--;
-                countdownNumber.innerText = timeLeft;
-
-                if (timeLeft <= 0) {
-                    clearInterval(countdownTimer);
-                    showWinner(names);
-                }
+                timerEl.innerText = timeLeft;
+                if (timeLeft <= 0) stopArisan(names);
             }, 1000);
+
+            // 2. Logika Nama Berputar Cepat (Visual Game)
+            intervalShuffle = setInterval(() => {
+                const randomName = names[Math.floor(Math.random() * names.length)];
+                nameEl.innerText = randomName;
+                nameEl.classList.toggle('scale-110'); // Efek getar
+            }, 80); // Berubah setiap 0.08 detik
         }
 
-        function showWinner(names) {
-            const randomIndex = Math.floor(Math.random() * names.length);
-            const winner = names[randomIndex];
+        function stopArisan(names) {
+            clearInterval(intervalTimer);
+            clearInterval(intervalShuffle);
 
-            document.getElementById('countdownContainer').classList.add('hidden');
-            const resultContainer = document.getElementById('resultContainer');
-            const winnerName = document.getElementById('winnerName');
+            const winner = names[Math.floor(Math.random() * names.length)];
 
-            winnerName.innerText = winner;
-            resultContainer.classList.remove('hidden');
+            // Pindah ke UI Pemenang
+            document.getElementById('ui-shuffling').classList.add('hidden');
+            document.getElementById('ui-winner').classList.remove('hidden');
+            document.getElementById('finalWinner').innerText = winner;
+
+            // Efek Kembang Api
+            fireConfetti();
         }
 
-        function resetRaffle() {
-            document.getElementById('resultContainer').classList.add('hidden');
-            document.getElementById('inputSection').classList.remove('hidden');
-            document.getElementById('countdownNumber').innerText = "30";
+        function resetGame() {
+            document.getElementById('ui-winner').classList.add('hidden');
+            document.getElementById('ui-input').classList.remove('hidden');
+            document.getElementById('timer').innerText = "30";
+        }
+
+        function fireConfetti() {
+            var duration = 3 * 1000;
+            var end = Date.now() + duration;
+
+            (function frame() {
+              confetti({
+                particleCount: 3,
+                angle: 60,
+                spread: 55,
+                origin: { x: 0 },
+                colors: ['#6366f1', '#a855f7']
+              });
+              confetti({
+                particleCount: 3,
+                angle: 120,
+                spread: 55,
+                origin: { x: 1 },
+                colors: ['#6366f1', '#a855f7']
+              });
+
+              if (Date.now() < end) {
+                requestAnimationFrame(frame);
+              }
+            }());
         }
     </script>
 </body>
