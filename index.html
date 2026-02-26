@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuickRaffle | Undian Instan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .winner-animate {
+            animation: confetti 0.5s ease-out;
+        }
+        @keyframes confetti {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen flex items-center justify-center p-4">
+
+    <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md">
+        <h1 class="text-2xl font-bold text-slate-800 mb-6 text-center">🎯 QuickRaffle</h1>
+        
+        <div class="mb-4">
+            <label class="block text-sm font-medium text-slate-600 mb-2">Masukkan Daftar Nama (1 per baris)</label>
+            <textarea id="listInput" rows="8" 
+                class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+                placeholder="Contoh:&#10;Budi&#10;Andi&#10;Siti"></textarea>
+        </div>
+
+        <button onclick="drawWinner()" 
+            class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-lg transition-colors shadow-lg active:transform active:scale-95">
+            ACAK PEMENANG
+        </button>
+
+        <div id="resultContainer" class="hidden mt-8 p-6 bg-indigo-50 border-2 border-dashed border-indigo-200 rounded-xl text-center">
+            <p class="text-indigo-600 font-medium mb-1">Pemenangnya adalah:</p>
+            <h2 id="winnerName" class="text-3xl font-black text-indigo-900 break-words winner-animate"></h2>
+        </div>
+    </div>
+
+    <script>
+        function drawWinner() {
+            const input = document.getElementById('listInput').value;
+            const names = input.split('\n').map(name => name.trim()).filter(name => name !== "");
+            
+            if (names.length === 0) {
+                alert("Masukkan minimal satu nama!");
+                return;
+            }
+
+            const resultContainer = document.getElementById('resultContainer');
+            const winnerName = document.getElementById('winnerName');
+
+            // Logic Pengacakan (Fisher-Yates style simple pick)
+            const randomIndex = Math.floor(Math.random() * names.length);
+            const winner = names[randomIndex];
+
+            // Efek Loading singkat agar terasa "memproses"
+            winnerName.innerText = "Mengacak...";
+            resultContainer.classList.remove('hidden');
+
+            setTimeout(() => {
+                winnerName.innerText = winner;
+            }, 300);
+        }
+    </script>
+</body>
+</html>
